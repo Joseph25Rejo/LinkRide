@@ -1,5 +1,4 @@
 ﻿# LinkRide_1
-# Carpooling App
 
 A simple carpooling application designed for students to find and offer rides to their college. The application allows users to create trips, view available carpools, and register as drivers.
 
@@ -15,5 +14,37 @@ A simple carpooling application designed for students to find and offer rides to
 - **Frontend**: HTML, CSS, JavaScript
 - **Backend**: Node.js, Express
 - **Database**: SQLite3
+## Installation
 
-## File Structure
+### Prerequisites
+
+- Node.js (v12 or higher)
+- npm (Node Package Manager)
+
+### Steps to Set Up
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/yourusername/carpooling-app.git
+   cd carpooling-app
+2. **Navigate to backend Directory**:
+   ```bash
+    cd backend
+3. **Install Dependencies**:
+   ```bash
+   npm install express body-parser sqlite3
+4. **Start Backend Server**:
+    ```bash
+    nodemon app.js
+5. **Go to a search engine(Google) and type out http://localhost:{PORT}**
+
+### Usage
+**Creating a Trip**: 
+  Fill in the trip details in the form and click "Create Trip" to add a new trip.
+**Finding Carpools**: 
+  Click on the "Carpool" link in the navigation bar to view available trips.
+**Driver Registration**: 
+  Navigate to the "Become a Carpool Driver" page to register as a driver.
+### API Endpoints
+**POST /api/trips**: Create a new trip.
+**GET /api/trips**: Retrieve a list of available trips.
+**PUT /api/trips/**:id: Update the available seats for a specific trip.
