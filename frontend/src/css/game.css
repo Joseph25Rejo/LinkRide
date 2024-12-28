@@ -1,0 +1,622 @@
+    /* Base Styles */
+
+    :root[light-theme = 'light'] {
+        --primary-color: #2a2a2a;
+        --accent-color: #4a90e2;
+        --text-light: #ffffff;
+        --text-dark: #333333;
+        --transition: all 0.3s ease;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: var(--text-dark);
+        overflow-x: hidden;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+        from { transform: translateX(-100%); }
+        to { transform: translateX(0); }
+    }
+
+    @keyframes rainbow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* Header & Navigation */
+    .hero {
+        height: 100vh;
+        background: linear-gradient(135deg, #f6f8ff 0%, #f0f4ff 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("https://img.freepik.com/free-vector/carpool-concept-illustration_114360-9268.jpg?t=st=1732177325~exp=1732180925~hmac=d73ff01554ab186a9496a608cdedf27dddfaec8de08d4f899d2dc045edd1bbf3&w=1060") center/cover;
+        opacity: 0.1;
+        z-index: 0;
+    }
+
+    /* Nav bar container */
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 5%;
+        position: relative;
+        z-index: 1;
+        
+        /* Frosted Glass Effect */
+        background: rgba(255, 255, 255, 0.2); /* Semi-transparent white background */
+        backdrop-filter: blur(10px); /* Apply blur effect to the background */
+        border-radius: 15px; /* Rounded corners */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow for prominence */
+    }
+
+    nav:hover {
+        background: rgba(255, 255, 255, 0.3); /* Slightly increased opacity when hovered */
+    }
+
+    /* Logo styling */
+    .logo {
+        font-size: 2rem;
+        font-weight: bold;
+        background: linear-gradient(45deg, #333, #666);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* Flex container for nav links */
+    .nav-links {
+        display: flex;
+        gap: 1.5rem; /* Add space between links */
+    }
+
+    .nav-links a {
+        color: var(--text-dark);
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+    .nav-links a:hover {
+        color: var(--accent-color);
+    }
+
+    /* Styling for the login button */
+    #authBtn {
+        background-color: transparent; /* Blue background */
+        color: #333333; /* White text */
+        border: 2px solid transparent; /* No border */
+        padding: 8px 15px; /* Reduced padding to decrease width */
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width: auto; /* Set width to auto for dynamic sizing */
+        min-width: 100px; /* Ensure the button doesn’t shrink too much */
+        max-width: 160px; /* Set a maximum width to keep it consistent */
+    }
+
+    #authBtn:hover {
+        background-color: #0056b3; /* Darker blue when hovered */
+        border-color: #003366; /* Dark border */
+    }
+
+    #authBtn:focus {
+        outline: none; /* Remove default focus outline */
+    }
+
+    /* Buttons */
+    .btn-primary {
+        background: var(--primary-color);
+        color: var(--text-light);
+        padding: 0.8rem 2rem;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .rainbow-border::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+        background-size: 400%;
+        z-index: -1;
+        animation: rainbow 20s linear infinite;
+        border-radius: inherit;
+        opacity: 0;
+        transition: var(--transition);
+    }
+
+    .rainbow-border:hover::before {
+        opacity: 1;
+    }
+
+    /* Hero Content */
+    .hero-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        padding-top: 15vh;
+    }
+
+    .animate-title {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        animation: fadeIn 1s ease-out;
+    }
+
+    .animate-subtitle {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        animation: fadeIn 1s ease-out 0.3s backwards;
+    }
+
+    /* Destinations Section */
+    .destinations {
+        padding: 5rem 5%;
+        background: #ffffff;
+    }
+
+    .destination-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .destination-card {
+        height: 400px;
+        border-radius: 15px;
+        overflow: hidden;
+        position: relative;
+        background-size: cover;
+        background-position: center;
+        transition: var(--transition);
+    }
+
+    .destination-card:hover {
+        transform: scale(1.03);
+    }
+
+    .card-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 2rem;
+        background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        color: var(--text-light);
+    }
+
+    /* Experiences Section */
+    .experiences {
+        padding: 5rem 5%;
+        background: #f8f9fa;
+    }
+
+    .experience-slider {
+        display: flex;
+        overflow-x: auto;
+        gap: 2rem;
+        padding: 2rem 0;
+        scrollbar-width: none;
+    }
+
+    .experience-card {
+        min-width: 300px;
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: var(--transition);
+    }
+
+    .experience-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .experience-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .experience-card h3, .experience-card p {
+        padding: 1rem;
+    }
+
+    /* Auth Modal */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+    }
+
+    .modal-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 400px;
+    }
+
+    .auth-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .auth-form input {
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .auth-form h2 {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .close {
+        position: absolute;
+        right: 1rem;
+        top: 1rem;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    /* Footer */
+    footer {
+        background: var(--primary-color);
+        color: var(--text-light);
+        padding: 3rem 5%;
+    }
+
+    .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+
+    .social-links {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .social-links a {
+        color: var(--text-light);
+        text-decoration: none;
+    }
+
+    .footer-bottom {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .nav-links {
+            display: none;
+        }
+        
+        .animate-title {
+            font-size: 2.5rem;
+        }
+        
+        .animate-subtitle {
+            font-size: 1.2rem;
+        }
+    }
+
+    .landing {
+        position: relative;
+        height: 100vh; /* Full viewport height */
+        display: flex;
+        justify-content: center; /* Horizontally center the video */
+        align-items: center; /* Vertically center the video */
+    }
+
+    .bg-video {
+        width: 100%; /* Ensure the video fills the width */
+        height: 100%; /* Ensure the video fills the height */
+        object-fit: cover; /* Make the video cover the area without distortion */
+    }
+    /* Carpool Routes Section */
+    .carpool-routes {
+        padding: 4rem 5%;
+        background-color: #f8f9fa;
+    }
+
+    .carpool-routes .section-title {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .carpool-routes .route-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    /* Slider Container */
+    .slider-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin-top: 2rem;
+    }
+
+    .route-list-slider {
+        display: flex;
+        transition: transform 0.5s ease;
+    }
+
+    .route-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        margin: 0 1rem;
+        flex-shrink: 0;
+        text-align: center;
+    }
+
+    .route-card h3 {
+        font-size: 1.6rem;
+        margin-bottom: 1rem;
+    }
+
+    .route-card p {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .route-card .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 0.8rem 2rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .route-card .btn-primary:hover {
+        background-color: var(--accent-color);
+    }
+
+    /* Slider Buttons */
+    .slider-btn {
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 1rem;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 2rem;
+        border-radius: 5px;
+    }
+
+    .left-btn {
+        left: 0;
+    }
+
+    .right-btn {
+        right: 0;
+    }
+
+    .slider-btn:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    /* Emergency and Fare Section */
+    .carpool-info {
+        margin-top: 4rem;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .emergency-contact, .car-fare {
+        flex: 1;
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .emergency-contact h3, .car-fare h3 {
+        font-size: 1.6rem;
+        margin-bottom: 1.5rem;
+        color: var(--primary-color);
+    }
+
+    .emergency-contact ul, .car-fare ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .emergency-contact li, .car-fare li {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .car-fare li {
+        font-weight: bold;
+    }
+    .carousel-container {
+        position: relative;
+        width: 80%;
+        margin: 0 auto;
+        overflow: hidden;
+    }
+
+    .route-list {
+        display: flex;
+        transition: transform 0.3s ease;
+    }
+
+    .route-card {
+        min-width: 300px;
+        margin: 0 10px;
+        padding: 15px;
+        background: #f4f4f4;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .carousel-btn {
+        position: absolute;
+        top: 50%;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 50%;
+        z-index: 10;
+    }
+
+    .left-btn {
+        left: 0;
+        transform: translateY(-50%);
+    }
+
+    .right-btn {
+        right: 0;
+        transform: translateY(-50%);
+    }
+
+    .carousel-btn:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+    /* For the carpool driver registration page */
+    .driver-form-section {
+        width: 80%;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f4f4f4;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .driver-form-section h2 {
+        text-align: center;
+        font-size: 2em;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    button.btn-primary {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        background-color: #4CAF50;
+        color: white;
+        font-size: 1.2em;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button.btn-primary:hover {
+        background-color: #45a049;
+    }
+
+    .fa {
+        padding: 10px;
+        font-size: 30px;
+        width: 30px;
+        text-align: center;
+        text-decoration: none;
+        margin: 5px 2px;
+        border-radius: 50%;
+    }
+    
+    .fa:hover {
+        opacity: 0.7;
+    }
+    .fa-linkedin {
+        background: #007bb5;
+        color: white;
+    }
+    .fa-instagram {
+        background: #125688;
+        color: white;
+    }
+    .fa-snapchat-ghost {
+        background: #fffc00;
+        color: white;
+        text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    }

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Become a Carpool Driver</title>
+    <link rel="stylesheet" href="../css/driver.css"> <!-- Your main CSS file -->
+    <link rel="stylesheet" href="app.css">  <!-- If you have additional styling -->
+    <link rel="stylesheet" href="become-driver.css"> 
+</head>
+<body>
+
+    <!-- Main Navigation Bar -->
+    <header>
+        <div class="logo">LinkRide</div>
+        <div class="nav-links">
+            <a href="#destinations">Destinations</a>
+            <a href="#experiences">How It Works</a>
+            <a href="#footer">Contact</a>
+        </div>
+        <ul>
+            <li><a href="driver.html">Become a Carpool Driver</a></li>
+        </ul>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <section class="form-container">
+            <div class="form-header">
+                <h2>Register as a Carpool Driver</h2>
+                <p>Help fellow students by offering carpool rides to RVCE!</p>
+            </div>
+
+            <form id="driver-form" class="form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="car-model">Car Model</label>
+                    <input type="text" id="car-model" name="car-model" placeholder="Enter your car model" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="seats">Seats Available</label>
+                    <input type="number" id="seats" name="seats" placeholder="Seats available" min="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="departure">Departure Location</label>
+                    <input type="text" id="departure" name="departure" placeholder="Where are you departing from?" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="departure-time">Departure Time</label>
+                    <input type="time" id="departure-time" name="departure-time" required>
+                </div>
+
+                <button type="submit" class="btn-primary">Register</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 RVCE Carpooling. All rights reserved.</p>
+    </footer>
+
+    <script src="carpool-driver.js"></script> <!-- JavaScript for form handling -->
+</body>
+</html>
