@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkRide - Modern Carpooling</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #a855f7;
+            --background: #f8fafc;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f4ff 0%, #fff 50%, #faf5ff 100%);
+            min-height: 100vh;
+        }
+
+        nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 5%;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #1f2937;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+        }
+
+        .search-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .search-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-input {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .search-button {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .search-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3);
+        }
+
+        #drivers-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .driver-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .driver-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .driver-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .driver-avatar {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+        }
+
+        .driver-info h3 {
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+
+        .rating {
+            color: #fbbf24;
+        }
+
+        .driver-details {
+            margin: 1rem 0;
+            color: #4b5563;
+        }
+
+        .driver-details p {
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .book-button {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .book-button:hover {
+            background: var(--primary-dark);
+        }
+
+        .booking-status-dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .loader {
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .nav-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .booking-status-dialog {
+            text-align: center;
+        }
+        
+        .booking-status-dialog h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .booking-status-dialog p {
+            margin-bottom: 1rem;
+        }
+        
+        .booking-status-dialog button {
+            margin-top: 1rem;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .status-pending {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-content">
+            <div class="logo">LinkRide</div>
+            <div class="nav-links">
+                <a href="/"><i class="fas fa-home"></i> Home</a>
+                <a href="/driver"><i class="fas fa-car"></i> Driver</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="search-container">
+        <div class="search-grid">
+            <input type="text" id="start-input" placeholder="Start Location" class="search-input">
+            <input type="text" id="end-input" placeholder="End Location" class="search-input">
+        </div>
+        <button id="search-button" class="search-button">
+            <i class="fas fa-search"></i>
+            Search Rides
+        </button>
+    </div>
+
+    <div id="drivers-container"></div>
+
+    <script>
+        async function fetchDrivers() {
+            try {
+                const response = await fetch('/api/drivers');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching drivers:', error);
+                return [];
+            }
+        }
+
+        // Filter drivers based on start and end locations
+        function filterDrivers(drivers, start, end) {
+            return drivers.filter(driver => {
+                const matchesStart = start ? driver.routes.start.toLowerCase().includes(start.toLowerCase()) : true;
+                const matchesEnd = end ? driver.routes.end.toLowerCase().includes(end.toLowerCase()) : true;
+                return matchesStart && matchesEnd;
+            });
+        }
+
+        // Render drivers to the page
+        function renderDrivers(drivers) {
+            const driversContainer = document.getElementById('drivers-container');
+            driversContainer.innerHTML = '';
+
+            if (drivers.length === 0) {
+                driversContainer.innerHTML = '<p class="no-results">No rides found matching your criteria.</p>';
+                return;
+            }
+
+            drivers.forEach(driver => {
+                const driverCard = document.createElement('div');
+                driverCard.className = 'driver-card';
+                driverCard.innerHTML = `
+                    <div class="driver-header">
+                        <div class="driver-avatar"></div>
+                        <div class="driver-info">
+                            <h3>${driver.name}</h3>
+                            <div class="rating">
+                                ${Array(5).fill('★').join('')}
+                                <span>${driver.rating}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="driver-details">
+                        <p><i class="fas fa-car"></i> ${driver.car}</p>
+                        <p><i class="fas fa-route"></i> ${driver.routes.start} to ${driver.routes.end}</p>
+                        <p><i class="fas fa-users"></i> ${driver.seatsAvailable} seats available</p>
+                    </div>
+                    <button class="book-button" onclick="bookRide(${driver.id})">
+                        Book Ride
+                    </button>
+                `;
+                driversContainer.appendChild(driverCard);
+            });
+        }
+
+        // Book a ride and trigger status updates
+        async function bookRide(driverId) {
+            const userName = prompt("Enter your name:");
+            const userContact = prompt("Enter your contact information:");
+            const pickupLocation = document.getElementById('start-input').value;
+            const destination = document.getElementById('end-input').value;
+
+            if (!userName || !userContact || !pickupLocation || !destination) {
+                alert("All fields are required to book a ride!");
+                return;
+            }
+
+            const userId = Date.now();
+            showWaitingDialog();
+
+            try {
+                const response = await fetch('/api/bookRide', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId,
+                        driverId,
+                        userName,
+                        userContact,
+                        pickupLocation,
+                        destination
+                    })
+                });
+
+                if (response.ok) {
+                    hideWaitingDialog();
+                    alert("Booking request sent successfully!");
+                    // Start polling for booking status
+                    startStatusPolling(userId, driverId);
+                } else {
+                    hideWaitingDialog();
+                    alert("Failed to send booking request. Please try again.");
+                }
+            } catch (error) {
+                hideWaitingDialog();
+                alert("An error occurred while booking. Please try again.");
+            }
+        }
+
+        // Show waiting dialog while booking
+        function showWaitingDialog() {
+            const dialog = document.createElement('div');
+            dialog.className = 'booking-status-dialog';
+            dialog.id = 'bookingDialog';
+            dialog.innerHTML = `
+                <h3>Sending Booking Request</h3>
+                <p>Please wait while we submit your request...</p>
+                <div class="loader"></div>
+            `;
+            document.body.appendChild(dialog);
+        }
+
+        // Hide waiting dialog
+        function hideWaitingDialog() {
+            const dialog = document.getElementById('bookingDialog');
+            if (dialog) {
+                dialog.remove();
+            }
+        }
+
+        // Fetch updated booking status
+        async function getUpdatedBookingStatus(userId, driverId) {
+            try {
+                const response = await fetch('/api/updateBookingStatus', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, driverId, status })
+                });
+                console.log(response);
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch booking status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log(`Booking status for User ${userId}:`, data);
+
+                // Update the UI with the retrieved status
+                const statusMessage = data.status || "No status available";
+                showStatusDialog(userId, statusMessage);
+            } catch (error) {
+                console.error('Error fetching booking status:', error);
+                alert('Unable to fetch booking status. Please try again.');
+            }
+        }
+
+        // Show booking status dialog
+        function showStatusDialog(userId, status) {
+            const dialog = document.createElement('div');
+            dialog.className = 'booking-status-dialog';
+            dialog.id = `status-dialog-${userId}`;
+            dialog.innerHTML = `
+                <h3>Booking Status</h3>
+                <p>Status: ${status}</p>
+                <button onclick="closeStatusDialog('${userId}')" class="book-button">Close</button>
+            `;
+            document.body.appendChild(dialog);
+        }
+
+        // Close booking status dialog
+        function closeStatusDialog(userId) {
+            const dialog = document.getElementById(`status-dialog-${userId}`);
+            if (dialog) {
+                dialog.remove();
+            }
+        }
+
+        // Start polling for booking status
+        function startStatusPolling(userId, driverId) {
+            const pollInterval = setInterval(async () => {
+                const status = await getUpdatedBookingStatus(userId, driverId);
+
+                if (status && ['rejected', 'completed'].includes(status)) {
+                    clearInterval(pollInterval);
+                }
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchButton = document.getElementById('search-button');
+            searchButton.addEventListener('click', async () => {
+                const drivers = await fetchDrivers();
+                const start = document.getElementById('start-input').value;
+                const end = document.getElementById('end-input').value;
+                const filteredDrivers = filterDrivers(drivers, start, end);
+                renderDrivers(filteredDrivers);
+            });
+        });
+    </script>
+</body>
+</html>

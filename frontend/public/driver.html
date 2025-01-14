@@ -3,80 +3,892 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Become a Carpool Driver</title>
-    <link rel="stylesheet" href="../css/driver.css"> <!-- Your main CSS file -->
-    <link rel="stylesheet" href="app.css">  <!-- If you have additional styling -->
-    <link rel="stylesheet" href="become-driver.css"> 
+    <title>Driver Dashboard - LinkRide</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+        }
+
+        .navbar {
+            background: white;
+            padding: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .driver-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .status-toggle {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .status-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray-300);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--success);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .dashboard {
+            padding: 2rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            color: var(--gray-700);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--gray-800);
+        }
+
+        .requests-container {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .requests-header {
+            padding: 1rem;
+            background: var(--gray-100);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .refresh-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.2s;
+        }
+
+        .refresh-button:hover {
+            background: var(--primary-dark);
+        }
+
+        .request-card {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            transition: background-color 0.2s, opacity 0.3s;
+        }
+
+        .request-card:hover {
+            background: var(--gray-100);
+        }
+
+        .request-info h3 {
+            color: var(--gray-800);
+            margin-bottom: 0.5rem;
+        }
+
+        .request-details {
+            display: grid;
+            gap: 0.5rem;
+            color: var(--gray-700);
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .no-requests {
+            padding: 3rem;
+            text-align: center;
+            color: var(--gray-700);
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #333, #666);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem; /* Add space between links */
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+        }   
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--text-light);
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .rainbow-border::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            background-size: 400%;
+            z-index: -1;
+            animation: rainbow 20s linear infinite;
+            border-radius: inherit;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .rainbow-border:hover::before {
+            opacity: 1;
+        }
+
+        .loading {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .request-card {
+                grid-template-columns: 1fr;
+            }
+            
+            .request-actions {
+                justify-content: flex-start;
+            }
+        }
+        .accepted-rides-container {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .accepted-rides-header {
+            padding: 1rem;
+            background: var(--gray-100);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .accepted-ride-card {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+        }
+
+        .ride-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-accepted {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-in-progress {
+            background: var(--warning);
+            color: white;
+        }
+
+        .status-completed {
+            background: var(--primary);
+            color: white;
+        }
+
+        .empty-dashboard {
+            padding: 3rem;
+            text-align: center;
+            color: var(--gray-700);
+        }
+    </style>
 </head>
 <body>
-
-    <!-- Main Navigation Bar -->
-    <header>
-        <div class="logo">LinkRide</div>
-        <div class="nav-links">
-            <a href="#destinations">Destinations</a>
-            <a href="#experiences">How It Works</a>
-            <a href="#footer">Contact</a>
-        </div>
-        <ul>
-            <li><a href="driver.html">Become a Carpool Driver</a></li>
-        </ul>
-    </header>
-
-    <!-- Main Content -->
-    <main>
-        <section class="form-container">
-            <div class="form-header">
-                <h2>Register as a Carpool Driver</h2>
-                <p>Help fellow students by offering carpool rides to RVCE!</p>
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <nav>
+                <div class="logo">LinkRide</div>
+            </nav>
+            <div class="nav-links">
+                <a href="/" class="btn-primary rainbow-border">Home</a>
+                <a href="/mapping" class="btn-primary rainbow-border">Maps</a>
             </div>
+            <div class="driver-status">
+                <span>Online Status</span>
+                <label class="status-toggle">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </nav>
 
-            <form id="driver-form" class="form">
-                <div class="form-group">
-                    <label for="name">Full Name</label>
-                    <input type="text" id="name" name="name" placeholder="Enter your name" required>
+    <main class="dashboard">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>ID</h3>
+                    <div class="value" id="driverId">loading...</div>
                 </div>
-
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                <div class="stat-card">
+                    <h3>Name</h3>
+                    <div class="value" id="driverName">loading...</div>
                 </div>
-
-                <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+                <div class="stat-card">
+                    <h3>Current Status</h3>
+                    <div class="value" id="currentStatus">loading...</div>
                 </div>
-
-                <div class="form-group">
-                    <label for="car-model">Car Model</label>
-                    <input type="text" id="car-model" name="car-model" placeholder="Enter your car model" required>
+                <div class="stat-card">
+                    <h3>Driver Rating</h3>
+                    <div class="value" id="driverRating">loading...</div>
                 </div>
-
-                <div class="form-group">
-                    <label for="seats">Seats Available</label>
-                    <input type="number" id="seats" name="seats" placeholder="Seats available" min="1" required>
+            </div>
+            <div class="accepted-rides-container">
+                <div class="accepted-rides-header">
+                    <h2>Accepted Rides Dashboard</h2>
                 </div>
-
-                <div class="form-group">
-                    <label for="departure">Departure Location</label>
-                    <input type="text" id="departure" name="departure" placeholder="Where are you departing from?" required>
+                <div id="acceptedRidesContainer"></div>
+            </div>
+            <div class="requests-container">
+                <div class="requests-header">
+                    <h2>Booking Requests</h2>
+                    <button onclick="refreshRequests()" class="refresh-button">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh
+                    </button>
                 </div>
-
-                <div class="form-group">
-                    <label for="departure-time">Departure Time</label>
-                    <input type="time" id="departure-time" name="departure-time" required>
-                </div>
-
-                <button type="submit" class="btn-primary">Register</button>
-            </form>
-        </section>
+                <div id="requestsContainer"></div>
+            </div>
+        </div>
     </main>
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2024 RVCE Carpooling. All rights reserved.</p>
-    </footer>
+    <script>
+        let isLoading = false;
+        const acceptedRequests = new Set();
+        let currentRequests = [];
+        let bookingStatuses = new Map();
+        let driverId = null;
+        let currentDriver = null;
+        let acceptedRides = [];
 
-    <script src="carpool-driver.js"></script> <!-- JavaScript for form handling -->
+        // Function to load driver details dynamically
+        async function loadDriverDetails() {
+            // Prompt for driver ID
+            driverId = prompt("Enter your driver ID:");
+            
+            try {
+                const response = await fetch('/api/drivers');
+                const driversDatabase = await response.json();
+                
+                // Find the current driver
+                currentDriver = driversDatabase.find(driver => driver.id === parseInt(driverId));
+
+                if (!currentDriver) {
+                    alert("Invalid Driver ID. Using default driver.");
+                    currentDriver = driversDatabase[0]; // Default to first driver
+                }
+
+                // Update stat cards
+                updateDriverStatCards();
+            } catch (error) {
+                console.error("Error loading driver details:", error);
+                alert("Failed to load driver details. Please try again.");
+            }
+        }
+        async function updateDashboard() {
+            try {
+                // Fetch driver details
+                const driverResponse = await fetch(`/api/drivers/${driverId}`);
+                const driverData = await driverResponse.json();
+
+                // Fetch current requests
+                const requestsResponse = await fetch(`/api/requests/${driverId}`);
+                const requestsData = await requestsResponse.json();
+
+                // Fetch accepted rides
+                const ridesResponse = await fetch(`/api/acceptedRides/${driverId}`);
+                const ridesData = await ridesResponse.json();
+
+                // Update driver details
+                updateDriverStatCards(driverData);
+
+                // Update requests
+                updateRequestsContainer(requestsData);
+
+                // Update accepted rides
+                updateAcceptedRidesContainer(ridesData);
+
+            } catch (error) {
+                console.error('Dashboard update error:', error);
+            }
+        }
+        function updateRequestsContainer(requests) {
+            const container = document.getElementById('requestsContainer');
+            
+            // Clear existing requests
+            container.innerHTML = '';
+
+            // If no requests
+            if (requests.length === 0) {
+                container.innerHTML = `
+                    <div class="no-requests">
+                        <i class="fas fa-inbox fa-3x"></i>
+                        <p>No booking requests available</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Render new requests
+            requests.forEach(request => {
+                const requestCard = createRequestCard(request);
+                container.innerHTML += requestCard;
+            });
+        }
+        function updateAcceptedRidesContainer(rides) {
+                    const container = document.getElementById('acceptedRidesContainer');
+                    
+                    // Clear existing rides
+                    container.innerHTML = '';
+
+                    // If no accepted rides
+                    if (rides.length === 0) {
+                        container.innerHTML = `
+                            <div class="empty-dashboard">
+                                <i class="fas fa-car fa-3x"></i>
+                                <p>No accepted rides at the moment</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    // Render accepted rides
+                    rides.forEach(ride => {
+                        const rideCard = createAcceptedRideCard(ride);
+                        container.innerHTML += rideCard;
+                    });
+                }
+        function updateDriverStatCards() {
+                if (!currentDriver) return;
+
+                // Update stat cards
+                document.getElementById('driverId').textContent = currentDriver.id;
+                document.getElementById('driverName').textContent = currentDriver.name;
+                document.getElementById('driverRating').textContent = `${currentDriver.rating} ★`;
+                
+                // Optional: Update additional stat cards
+                document.getElementById('currentStatus').textContent = currentDriver.isOnline ? 'Online' : 'Offline';
+                
+                // You can add more stat card updates here
+            }
+
+            // Call this function when the page loads
+            document.addEventListener('DOMContentLoaded', () => {
+                loadDriverDetails();
+            });
+
+            // Optional: Add a function to update driver status
+            function updateDriverStatus(isOnline) {
+                if (!currentDriver) return;
+
+                currentDriver.isOnline = isOnline;
+                document.getElementById('currentStatus').textContent = isOnline ? 'Online' : 'Offline';
+
+                // Optional: Send status update to server
+                fetch('/api/updateDriverStatus', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        driverId: currentDriver.id,
+                        isOnline: isOnline
+                    })
+                });
+            }
+
+            // Modify the status toggle to use the updateDriverStatus function
+            document.addEventListener('DOMContentLoaded', () => {
+                const statusToggle = document.getElementById('statusToggle');
+                if (statusToggle) {
+                    statusToggle.addEventListener('change', (e) => {
+                        updateDriverStatus(e.target.checked);
+                    });
+                }
+            });
+        function createRequestCard(request, isAccepted = false) {
+            const status = bookingStatuses.get(request.userId) || 'pending';
+            return `
+                <div class="request-card" id="request-${request.userId}">
+                    <div class="request-info">
+                        <h3>New Ride Request 
+                            <span style="color: ${getStatusColor(status)}">(${status.toUpperCase()})</span>
+                        </h3>
+                        <div class="request-details">
+                            <p><i class="fas fa-user"></i> ${request.userName}</p>
+                            <p><i class="fas fa-phone"></i> ${request.userContact}</p>
+                            <p><i class="fas fa-map-marker-alt"></i> From: ${request.pickupLocation}</p>
+                            <p><i class="fas fa-location-arrow"></i> To: ${request.destination}</p>
+                        </div>
+                    </div>
+                    <div class="request-actions">
+                        ${status === 'pending' ? `
+                            <button class="btn btn-success" onclick="acceptRequest('${request.userId}')">
+                                <i class="fas fa-check"></i> Accept
+                            </button>
+                            <button class="btn btn-danger" onclick="declineRequest('${request.userId}')">
+                                <i class="fas fa-times"></i> Decline
+                            </button>
+                        ` : `
+                            <button class="btn btn-${status === 'accepted' ? 'success' : 'danger'}" disabled>
+                                <i class="fas fa-${status === 'accepted' ? 'check' : 'times'}"></i> 
+                                ${status === 'accepted' ? 'Accepted' : 'Declined'}
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `;
+        }
+        function getStatusColor(status) {
+            switch(status) {
+                case 'accepted': return 'var(--success)';
+                case 'rejected': return 'var(--danger)';
+                default: return 'var(--warning)';
+            }
+        }
+        function createAcceptedRideCard(ride) {
+            return `
+                <div class="accepted-ride-card" id="accepted-${ride.userId}">
+                    <div class="request-info">
+                        <h3>
+                            Ride #${ride.userId}
+                            <span class="ride-status status-${ride.status.toLowerCase()}">
+                                ${ride.status}
+                            </span>
+                        </h3>
+                        <div class="request-details">
+                            <p><i class="fas fa-user"></i> ${ride.userName}</p>
+                            <p><i class="fas fa-phone"></i> ${ride.userContact}</p>
+                            <p><i class="fas fa-map-marker-alt"></i> From: ${ride.pickupLocation}</p>
+                            <p><i class="fas fa-location-arrow"></i> To: ${ride.destination}</p>
+                        </div>
+                    </div>
+                    <div class="request-actions">
+                        ${getRideActionButton(ride)}
+                    </div>
+                </div>
+            `;
+        }
+
+        function getRideActionButton(ride) {
+            switch(ride.status) {
+                case 'ACCEPTED':
+                    return `
+                        <button class="action-button" onclick="startRide('${ride.userId}')">
+                            <i class="fas fa-play"></i> Start Ride
+                        </button>
+                    `;
+                case 'IN_PROGRESS':
+                    return `
+                        <button class="action-button" onclick="completeRide('${ride.userId}')">
+                            <i class="fas fa-check"></i> Complete Ride
+                        </button>
+                    `;
+                case 'COMPLETED':
+                    return `
+                        <button class="action-button" disabled>
+                            <i class="fas fa-flag-checkered"></i> Completed
+                        </button>
+                    `;
+                default:
+                    return '';
+            }
+        }
+
+        function acceptRequest(userId) {
+            const requestCard = document.getElementById(`request-${userId}`);
+            console.log("Accepted :", currentDriver.id);
+            if (!requestCard) return;
+
+            // Enhanced status management
+            fetch('http://localhost:5000/api/updateBookingStatus', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId,
+                    driverId: currentDriver.id,
+                    status: 'accepted'
+                })
+            }).then(response => {
+                if (response.ok) {
+                    // Update local state
+                    bookingStatuses.set(userId, 'accepted');
+                    acceptedRequests.add(userId);
+
+                    // Move to accepted rides
+                    const request = currentRequests.find(req => req.userId === userId);
+                    if (request) {
+                        acceptedRides.push(request);
+                        updateAcceptedRidesDashboard();
+                    }
+
+                    // Refresh requests
+                    refreshRequests();
+                }
+            });
+        }
+        function declineRequest(userId) {
+            fetch('http://localhost:5000/api/updateBookingStatus', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId,
+                    driverId: currentDriver.id,
+                    status: 'rejected'
+                })
+            }).then(response => {
+                if (response.ok) {
+                    // Remove from current requests
+                    currentRequests = currentRequests.filter(req => req.userId !== userId);
+                    
+                    // Update UI
+                    const requestCard = document.getElementById(`request-${userId}`);
+                    if (requestCard) {
+                        requestCard.remove();
+                    }
+                    
+                    checkEmptyRequests();
+                }
+            });
+        }
+        function startRide(userId) {
+            fetch('http://localhost:5000/api/startRide', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId,
+                    driverId: currentDriver.id
+                })
+            }).then(response => {
+                if (response.ok) {
+                    // Update ride status in accepted rides
+                    const rideIndex = acceptedRides.findIndex(ride => ride.userId === userId);
+                    if (rideIndex !== -1) {
+                        acceptedRides[rideIndex].status = 'in-progress';
+                        updateAcceptedRidesDashboard();
+                    }
+                }
+            });
+        }
+
+        function completeRide(userId) {
+            fetch('http://localhost:5000/api/completeRide', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId,
+                    driverId: currentDriver.id
+                })
+            }).then(response => {
+                if (response.ok) {
+                    // Remove completed ride
+                    acceptedRides = acceptedRides.filter(ride => ride.userId !== userId);
+                    updateAcceptedRidesDashboard();
+                }
+            });
+        }
+
+        const statusToggle = document.querySelector('.status-toggle input');
+        statusToggle.addEventListener('change', (e) => {
+            const isOnline = e.target.checked;
+            document.getElementById('currentStatus').textContent = isOnline ? 'Online' : 'Offline';
+            
+            fetch(`http://localhost:5000/api/updateDriverStatus`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    driverId,
+                    isOnline
+                })
+            });
+        });
+
+        function updateAcceptedRidesDashboard() {
+            const container = document.getElementById('acceptedRidesContainer');
+            
+            if (acceptedRides.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-dashboard">
+                        <i class="fas fa-car fa-3x"></i>
+                        <p>No accepted rides at the moment</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = acceptedRides.map(ride => `
+                <div class="accepted-ride-card" id="accepted-${ride.userId}">
+                    <div class="request-info">
+                        <h3>
+                            Ride #${ride.userId}
+                            <span class="ride-status status-accepted">Accepted</span>
+                        </h3>
+                        <div class="request-details">
+                            <p><i class="fas fa-user"></i> ${ride.userName}</p>
+                            <p><i class="fas fa-phone"></i> ${ride.userContact}</p>
+                            <p><i class="fas fa-map-marker-alt"></i> From: ${ride.pickupLocation}</p>
+                            <p><i class="fas fa-location-arrow"></i> To: ${ride.destination}</p>
+                        </div>
+                    </div>
+                    <div class="request-actions">
+                        <button class="action-button" onclick="startRide('${ride.userId}')">
+                            <i class="fas fa-play"></i> Start Ride
+                        </button>
+                        <button class="action-button" onclick="completeRide('${ride.userId}')">
+                            <i class="fas fa-check"></i> Complete Ride
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function fetchRequests() {
+            if (isLoading) return;
+            
+            isLoading = true;
+            const refreshButton = document.querySelector('.refresh-button i');
+            refreshButton.classList.add('loading');
+
+            const container = document.getElementById('requestsContainer');
+            
+            // Fetch from your actual API endpoint
+            fetch(`/api/getDriverRequests/${driverId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    currentRequests = data; // Store the current requests
+                    
+                    if (data.length === 0) {
+                        container.innerHTML = `
+                            <div class="no-requests">
+                                <i class="fas fa-inbox fa-3x"></i>
+                                <p>No booking requests available at the moment</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    container.innerHTML = '';
+                    data.forEach(request => {
+                        const isAccepted = acceptedRequests.has(request.userId);
+                        container.innerHTML += createRequestCard(request, isAccepted);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching requests:', error);
+                    container.innerHTML = `
+                        <div class="no-requests">
+                            <i class="fas fa-exclamation-circle fa-3x"></i>
+                            <p>Failed to load booking requests. Please try again later.</p>
+                        </div>
+                    `;
+                })
+                .finally(() => {
+                    isLoading = false;
+                    refreshButton.classList.remove('loading');
+                });
+        }
+
+        function checkEmptyRequests() {
+            const container = document.getElementById('requestsContainer');
+            if (currentRequests.length === 0) {
+                container.innerHTML = `
+                    <div class=" no-requests">
+                        <i class="fas fa-inbox fa-3x"></i>
+                        <p>No booking requests available at the moment</p>
+                    </div>
+                `;
+            }
+        }
+
+        function refreshRequests() {
+            fetchRequests();
+        }
+        // Fetch requests on page load
+        fetchRequests();
+        // Refresh requests every 30 seconds
+        setInterval(fetchRequests, 30000);
+    </script>
 </body>
 </html>

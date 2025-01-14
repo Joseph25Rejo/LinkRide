@@ -8,61 +8,27 @@
     <title>Carpooling for Students</title>
     <link rel="stylesheet" href="../css/game.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="../src/js/index.js"></script>
 </head>
 
 <body>
-    <!-- Auth Modal -->
-    <div id="authModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeModal">&times;</span>
-            <!-- Login Form -->
-            <form id="loginForm" class="auth-form" action="/login" method="post">
-                <h2>Login</h2>
-                <label for="loginEmail">Email:</label>
-                <input type="email" id="loginEmail" name="email" placeholder="Email" required>
-                <label for="loginPassword">Password:</label>
-                <input type="password" id="loginPassword" name="password" placeholder="Password" required>
-                <button type="submit" class="btn-primary">Login</button>
-                <p>Don't have an account? <a href="#" id="showSignup">Sign up</a></p>
-            </form>
-            <!-- Signup Form -->
-            <form id="signupForm" class="auth-form hidden" action="/signup" method="post">
-                <h2>Sign Up</h2>
-                <label for="fullName">Full Name:</label>
-                <input type="text" id="fullName" name="name" placeholder="Full Name" required>
-                
-                <label for="signupEmail">Email:</label>
-                <input type="email" id="signupEmail" name="email" placeholder="Email" required>
-                
-                <label for="signupPassword">Password:</label>
-                <input type="password" id="signupPassword" name="password" placeholder="Password" required>
-                
-                <button type="submit" class="btn-primary">Sign Up</button>
-                
-                <p>Already have an account? <a href="#" id="showLogin">Login</a></p>
-            </form>
-        </div>
-    </div>
-
-    <!-- Navigation -->
     <nav>
         <div class="logo">LinkRide</div>
         <div class="nav-links">
-            <a href="#destinations" class="btn-primary rainbow-border">Carpool</a>
+            <a href="/carpooling" class="btn-primary rainbow-border">Carpool</a>
+            <a href="/emergency" class="btn-primary rainbow-border">Emergency</a>
             <a href="#experiences" class="btn-primary rainbow-border">How It Works</a>
             <a href="/mapping" class="btn-primary rainbow-border">Maps</a>
+            <a href="/driver" class="btn-primary rainbow-border">Driver</a>
             <a href="/about" class="btn-primary rainbow-border">About Us</a>
         </div>
-        <button id="authBtn" class="btn-primary rainbow-border" onclick="openModal()">Login/Signup</button>
     </nav>
-    
-    <!-- Hero Section -->
     <header>
         <section class="hero">
             <div class="hero-content">
                 <h1 class="animate-title">Carpooling for Students</h1>
                 <p class="animate-subtitle">A smarter way to get to college—Save money and reduce your carbon footprint.</p>
-                <a href="#destinations" class="btn-primary">Find Carpool</a>
+                <a href="/carpooling" class="btn-primary">Find Carpool</a>
             </div>
         </section>
     </header>
@@ -173,9 +139,9 @@
             <div>
                 <h3>Follow Us</h3>
                 <div class="social-links">
-                    <a href="https://www.linkedin.com/in/joseph-r-m-12514229b" class = "fa fa-linkedin"></a>
-                    <a href="https://www.snapchat.com/add/rm_josu" class="fa fa-snapchat-ghost"></a>
-                    <a href="https://www.instagram.com/joseph_r__m/" class="fa fa-instagram"></a>
+                    <a href="https://www.linkedin.com" class="fa fa-linkedin"></a>
+                    <a href="https://www.snapchat.com" class="fa fa-snapchat-ghost"></a>
+                    <a href="https://www.instagram.com" class="fa fa-instagram"></a>
                 </div>
             </div>
         </div>
@@ -216,6 +182,11 @@
             document.getElementById('signupForm').classList.add('hidden');
             document.getElementById('loginForm').classList.remove('hidden');
         });
+
+        // Navigate to a different page
+        function navigateTo(path) {
+            window.location.href = path;
+        }
     </script>
 </body>
 

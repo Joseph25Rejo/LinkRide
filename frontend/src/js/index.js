@@ -33,19 +33,74 @@ document.getElementById('showLogin').addEventListener('click', function () {
     document.getElementById('loginForm').classList.remove('hidden');
 });
 
-// Carousel Functionality
-const routeSlider = document.querySelector('.route-list-slider');
-let slideIndex = 0;
+// Enhanced Carousel Functionality
+let currentPosition = 0;
+const slider = document.querySelector('.route-list-slider');
+const cards = document.querySelectorAll('.route-card');
+const cardWidth = 320; // 300px card width + 20px gap
+let visibleCards = Math.floor(slider.offsetWidth / cardWidth);
+let maxPosition = (cards.length - visibleCards) * cardWidth;
 
 function moveSlide(direction) {
-    const routeCards = document.querySelectorAll('.route-card');
-    const cardWidth = routeCards[0].offsetWidth + 20; // Adjust for margin
-    const maxTranslate = -(cardWidth * (routeCards.length - 1));
-
-    slideIndex += direction;
-    const translateValue = Math.max(maxTranslate, Math.min(0, -cardWidth * slideIndex));
-    routeSlider.style.transform = `translateX(${translateValue}px)`;
+    // Calculate new position
+    const newPosition = currentPosition + (direction * cardWidth);
+    
+    // Check boundaries
+    if (newPosition < 0 || newPosition > maxPosition) {
+        return;
+    }
+    
+    // Update position
+    currentPosition = newPosition;
+    slider.style.transform = `translateX(-${currentPosition}px)`;
+    
+    // Update button states
+    updateButtonStates();
 }
+
+function updateButtonStates() {
+    const leftBtn = document.querySelector('.left-btn');
+    const rightBtn = document.querySelector('.right-btn');
+    
+    // Disable left button if at start
+    leftBtn.disabled = currentPosition === 0;
+    leftBtn.style.opacity = currentPosition === 0 ? '0.5' : '1';
+    
+    // Disable right button if at end
+    rightBtn.disabled = currentPosition >= maxPosition;
+    rightBtn.style.opacity = currentPosition >= maxPosition ? '0.5' : '1';
+}
+
+// Touch support for carousel
+let touchStartX = 0;
+let touchEndX = 0;
+
+if (slider) {
+    slider.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+
+    slider.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+}
+
+function handleSwipe() {
+    const swipeThreshold = 50; // minimum distance for swipe
+    const difference = touchStartX - touchEndX;
+    
+    if (Math.abs(difference) > swipeThreshold) {
+        if (difference > 0) {
+            // Swiped left
+            moveSlide(1);
+        } else {
+            // Swiped right
+            moveSlide(-1);
+        }
+    }
+}
+
 async function createTrip() {
     const driverId = document.getElementById('driverId').value;
     const departure = document.getElementById('departure').value;
@@ -60,13 +115,6 @@ async function createTrip() {
         },
         body: JSON.stringify({ driverId, departure, destination, date, availableSeats }),
     });
-
-    if (response.ok) {
-        const trip = await response.json();
-        loadTrips(); // Refresh the trips list after creating a new trip
-    } else {
-        console.error('Error creating trip:', response.statusText);
-    }
 }
 
 async function loadTrips() {
@@ -86,5 +134,28 @@ async function loadTrips() {
     document.getElementById('trip-form').style.display = 'none';
 }
 
-// Load trips on page load
-window.onload = loadTrips;
+// Initialize carousel and load trips on page load
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize carousel
+    if (slider) {
+        updateButtonStates();
+        
+        // Add resize handler to update carousel state when window is resized
+        window.addEventListener('resize', () => {
+            // Recalculate visible cards
+            const newVisibleCards = Math.floor(slider.offsetWidth / cardWidth);
+            const newMaxPosition = (cards.length - newVisibleCards) * cardWidth;
+            
+            // If current position is beyond new max, adjust it
+            if (currentPosition > newMaxPosition) {
+                currentPosition = newMaxPosition;
+                slider.style.transform = `translateX(-${currentPosition}px)`;
+            }
+            
+            updateButtonStates();
+        });
+    }
+
+    // Load trips
+    loadTrips();
+});

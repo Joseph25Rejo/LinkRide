@@ -500,8 +500,9 @@
     }
     .carousel-container {
         position: relative;
-        width: 80%;
+        width: 100%;
         margin: 0 auto;
+        padding: 0 40px;
         overflow: hidden;
     }
 
@@ -620,3 +621,74 @@
         color: white;
         text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
     }
+
+    /* Container for social links */
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  /* Styling for each social icon */
+  /* Container for social icons */
+.social-links {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+/* Base styling for each social icon */
+.social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #fff;
+    font-size: 24px;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover effects for icons */
+.social-links a:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Specific styling for LinkedIn */
+.social-links a.fa-linkedin {
+    background-color: #0077b5;
+    color: white;
+}
+
+.social-links a.fa-linkedin:hover {
+    background-color: #0e76a8;
+}
+
+/* Specific styling for Snapchat */
+.social-links a.fa-snapchat-ghost {
+    background-color: #FFFC00;
+    color: #000;
+}
+
+.social-links a.fa-snapchat-ghost:hover {
+    background-color: #F7F500;
+}
+
+/* Specific styling for Instagram */
+.social-links a.fa-instagram {
+    background-color: #E1306C;
+    color: white;
+}
+
+.social-links a.fa-instagram:hover {
+    background-color: #C13584;
+}
+  
