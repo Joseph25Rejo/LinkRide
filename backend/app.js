@@ -65,11 +65,10 @@ app.get('/api/bookingStatus/:userId', (req, res) => {
     const userId = req.params.userId;
     const status = bookingStatuses.get(userId);
     
-    if (!status) {
-        return res.status(404).json({ status: 'pending' });
-    }
-    
-    res.status(200).json({ status: status.status });
+    // Always return a valid response with a status
+    res.status(200).json({
+        status: status?.status || 'pending'
+    });
 });
 
 app.get('/api/getDriverDetails/:driverId', (req, res) => {
@@ -90,15 +89,29 @@ app.post('/api/updateBookingStatus', (req, res) => {
     if (!userId || !driverId || !status) {
         return res.status(400).json({ message: 'Missing required fields' });
     }
-
-    // Update booking status
-    bookingStatuses.set(userId.toString(), { status });
     
-    // Optional: You might want to log or perform additional actions
-    console.log(`Booking status updated: User ${userId}, Status: ${status}`);
+    // Update the booking status here
+    const updatedStatus = updateBookingStatus(userId, driverId, status);
     
-    res.status(200).json({status: status});
+    if (updatedStatus) {
+        res.status(200).json({ status: updatedStatus });
+    } else {
+        res.status(500).json({ message: 'Failed to update booking status' });
+    }
 });
+
+function updateBookingStatus(userId, driverId, status) {
+    // Update the booking status here
+    // For example:
+    const bookingStatus = bookingStatuses.get(userId.toString());
+    if (bookingStatus) {
+        bookingStatus.status = status;
+        bookingStatuses.set(userId.toString(), bookingStatus);
+        return bookingStatus.status;
+    } else {
+        return null;
+    }
+}
 
 // Additional endpoints for ride lifecycle
 app.post('/api/startRide', (req, res) => {

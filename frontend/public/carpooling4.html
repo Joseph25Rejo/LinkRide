@@ -11,7 +11,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif ;
         }
 
         :root {
@@ -24,58 +24,6 @@
         body {
             background: linear-gradient(135deg, #f0f4ff 0%, #fff 50%, #faf5ff 100%);
             min-height: 100vh;
-        }
-
-        /* Navigation Bar */
-        nav {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            padding: 1rem 5%;
-        }
-
-        .nav-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 2rem;
-            font-weight: 800;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            transition: transform 0.3s ease;
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: #1f2937;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--primary);
         }
 
         /* Search Container */
@@ -265,17 +213,119 @@
                 grid-template-columns: 1fr;
             }
         }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: relative;
+            z-index: 1;
+            
+            /* Frosted Glass Effect */
+            background: rgba(255, 255, 255, 0.2); /* Semi-transparent white background */
+            backdrop-filter: blur(10px); /* Apply blur effect to the background */
+            border-radius: 15px; /* Rounded corners */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow for prominence */
+        }
+
+        nav:hover {
+            background: rgba(255, 255, 255, 0.3); /* Slightly increased opacity when hovered */
+        }
+
+        /* Logo styling */
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff0000, #000000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Flex container for nav links */
+        .nav-links {
+            display: flex;
+            gap: 1.5rem; /* Add space between links */
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Styling for the login button */
+        #authBtn {
+            background-color: transparent; /* Blue background */
+            color: #333333; /* White text */
+            border: 2px solid transparent; /* No border */
+            padding: 8px 15px; /* Reduced padding to decrease width */
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: auto; /* Set width to auto for dynamic sizing */
+            min-width: 100px; /* Ensure the button doesn’t shrink too much */
+            max-width: 160px; /* Set a maximum width to keep it consistent */
+        }
+
+        #authBtn:hover {
+            background-color: #0056b3; /* Darker blue when hovered */
+            border-color: #003366; /* Dark border */
+        }
+
+        #authBtn:focus {
+            outline: none; /* Remove default focus outline */
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--text-light);
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .rainbow-border::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            background-size: 400%;
+            z-index: -1;
+            animation: rainbow 20s linear infinite;
+            border-radius: inherit;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .rainbow-border:hover::before {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
     <nav>
-        <div ```html
-class="nav-content">
-            <div class="logo">LinkRide</div>
-            <div class="nav-links">
-                <a href="/"><i class="fas fa-home"></i> Home</a>
-                <a href="/driver"><i class="fas fa-car"></i> Driver</a>
-            </div>
+        <div class="logo">LinkRide</div>
+        <div class="nav-links">
+            <a href="/" class="btn-primary rainbow-border">Home</a>
+            <a href="/mapping" class="btn-primary rainbow-border">Maps</a>
+            <a href="/driver" class="btn-primary rainbow-border">Driver</a>
         </div>
     </nav>
 
@@ -542,8 +592,7 @@ V46.538
             });
         }
 
-        document.addEventListener('click', async function (event
-) {
+        document.addEventListener('click', async function (event) {
             if (event.target.classList.contains('btn-88')) {
                 const driverCard = event.target.closest('.driver-card');
                 const driverId = driverCard.dataset.driverId;

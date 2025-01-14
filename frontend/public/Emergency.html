@@ -6,87 +6,156 @@
     <title>Emergency Ride Booking</title>
     <style>
         :root {
-            --emergency-red: #ff3b3b;
-            --emergency-red-dark: #cc2929;
-            --emergency-red-light: #fff1f1;
-            --text-light: #ffffff;
-            --text-dark: #2d3748;
-            --success-green: #48bb78;
-            --warning-yellow: #ffd700;
-            --bg-gray: #f7fafc;
-            --border-color: #e2e8f0;
-            --shadow-color: rgba(0, 0, 0, 0.1);
+            --primary-red: #dc2626;
+            --secondary-red: #991b1b;
+            --alert-red: #fecaca;
+            --alert-bg: #fff5f5;
+            --white: #ffffff;
+            --black: #1f2937;
+            --success: #059669;
+            --warning: #fbbf24;
+            --gray-50: #f3f4f6;
+            --gray-100: #e5e7eb;
+            --gray-200: #d1d5db;
+            --gray-300: #9ca3af;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --background: #2d3748;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: system-ui, -apple-system, sans-serif;
         }
 
         body {
-            background: var(--bg-gray);
-            color: var(--text-dark);
-            line-height: 1.5;
+            background: var(--background);
+            min-height: 100vh;
+            color: var(--white);
         }
 
-        .emergency-container {
-            max-width: 1000px;
-            margin: 2rem auto;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 2rem;
         }
 
         .emergency-header {
-            background: linear-gradient(135deg, var(--emergency-red) 0%, var(--emergency-red-dark) 100%);
-            color: var(--text-light);
+            background: linear-gradient(135deg, var(--primary-red), var(--secondary-red));
             padding: 2rem;
-            border-radius: 16px;
+            border-radius: 1rem;
             margin-bottom: 2rem;
-            box-shadow: 0 8px 20px rgba(255, 59, 59, 0.2);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .emergency-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.1) 10px,
+                rgba(255,255,255,0.1) 20px
+            );
+            animation: slide 20s linear infinite;
+        }
+
+        @keyframes slide {
+            from { background-position: 0 0; }
+            to { background-position: 50px 50px; }
+        }
+
+        .pulse {
+            position: absolute;
+            top: 50%;
+            right: 2rem;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background: var(--alert-red);
+            border-radius: 50%;
             animation: pulse 2s infinite;
-            transform: translateZ(0);
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 8px 20px rgba(255, 59, 59, 0.2); }
-            50% { box-shadow: 0 12px 28px rgba(255, 59, 59, 0.4); }
-            100% { box-shadow: 0 8px 20px rgba(255, 59, 59, 0.2); }
+            0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(220, 38, 38, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
         }
 
-        .emergency-header h1 {
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            color: var(--white);
             font-size: 2.5rem;
-            font-weight: 800;
             margin-bottom: 1rem;
-            letter-spacing: -0.5px;
+            font-weight: 800;
         }
 
-        .emergency-header p {
-            font-size: 1.1rem;
+        .subtitle {
+            color: var(--white);
             opacity: 0.9;
+            font-size: 1.1rem;
             max-width: 600px;
         }
 
-        .locations-form {
-            background: white;
+        .booking-form {
+            background: var(--gray-800);
             padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px var(--shadow-color);
+            border-radius: 1rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
             margin-bottom: 2rem;
+            border: 1px solid var(--gray-300);
         }
 
-        .location-group {
-            display: flex;
+        .user-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
-        .location-input-wrapper {
-            flex: 1;
+        .location-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
             position: relative;
         }
 
-        .location-input-wrapper::before {
+        .input-group input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid var(--gray-300);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--gray-50);
+            color: var(--black);
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px var(--alert-red);
+        }
+
+        .input-group::before {
             content: '';
             position: absolute;
             left: 1rem;
@@ -95,40 +164,24 @@
             width: 12px;
             height: 12px;
             border-radius: 50%;
+            z-index: 1;
         }
 
-        .start-location::before {
-            background: var(--success-green);
+        .pickup::before {
+            background: var(--success);
         }
 
-        .end-location::before {
-            background: var(--emergency-red);
-        }
-
-        .location-input {
-            width: 100%;
-            padding: 1rem 1rem 1rem 2.5rem;
-            font-size: 1rem;
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            background: var(--bg-gray);
-        }
-
-        .location-input:focus {
-            outline: none;
-            border-color: var(--emergency-red);
-            background: white;
-            box-shadow: 0 0 0 3px var(--emergency-red-light);
+        .destination::before {
+            background: var(--primary-red);
         }
 
         .search-btn {
             width: 100%;
             padding: 1.25rem;
-            background: linear-gradient(135deg, var(--emergency-red) 0%, var(--emergency-red-dark) 100%);
-            color: var(--text-light);
+            background: var(--primary-red);
+            color: var(--white);
             border: none;
-            border-radius: 12px;
+            border-radius: 0.5rem;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
@@ -138,151 +191,141 @@
         }
 
         .search-btn:hover {
+            background: var(--secondary-red);
             transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(255, 59, 59, 0.2);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
         }
 
-        .search-btn:active {
-            transform: translateY(0);
-        }
-
-        .extra-fee-notice {
-            background: var(--warning-yellow);
-            color: var(--text-dark);
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 500;
-        }
-
-        .drivers-container {
+        .drivers-list {
             display: grid;
             gap: 1rem;
-            margin-top: 2rem;
         }
 
         .driver-card {
-            background: white;
-            border-radius: 16px;
+            background: var(--gray-800);
             padding: 1.5rem;
-            box-shadow: 0 4px 6px var(--shadow-color);
+            border-radius: 0.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             transition: all 0.3s ease;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--gray-300);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .driver-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 12px var(--shadow-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
         .driver-info {
-            flex: 1;
-            display: grid;
-            gap: 0.5rem;
-        }
-
-        .driver-name {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-dark);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 1rem;
         }
 
-        .driver-rating {
-            color: var(--warning-yellow);
-            font-weight: 600;
+        .driver-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gray-300);
+        }
+
+        .driver-details h3 {
+            color: var(--white);
+            margin-bottom: 0.25rem;
+        }
+
+        .driver-details small {
+            color: var(--gray-300);
+            display: block;
+        }
+
+        .rating {
+            color: var(--warning);
             display: flex;
             align-items: center;
             gap: 0.25rem;
+            margin: 0.5rem 0;
         }
 
-        .response-time {
-            color: var(--emergency-red);
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .emergency-badge {
+            background: var(--alert-bg);
+            color: var(--primary-red);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-top: 0.5rem;
         }
 
         .book-btn {
-            padding: 0.875rem 1.75rem;
-            background: var(--success-green);
-            color: white;
+            padding: 0.75rem 1.5rem;
+            background: var(--success);
+            color: var(--white);
             border: none;
-            border-radius: 8px;
+            border-radius: 0.5rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
+            min-width: 120px;
+            text-align: center;
         }
 
         .book-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(72, 187, 120, 0.2);
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
         }
 
-        .first-responder-badge {
-            background: var(--emergency-red);
-            color: white;
-            padding: 0.375rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .book-btn:disabled {
+            background: var(--gray-700);
+            cursor: not-allowed;
+            transform: none;
+            opacity: 0.7;
         }
 
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(4px);
+        .pagination-controls {
             display: flex;
             justify-content: center;
-            align-items: center;
-            z-index: 1000;
+            gap: 1rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
         }
 
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 6px solid rgba(255, 255, 255, 0.1);
-            border-left: 6px solid var(--emergency-red);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .pagination-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--gray-800);
+            color: var(--white);
+            border: 1px solid var(--gray-300);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+            text-align: center;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .pagination-btn:hover:not(:disabled) {
+            background: var(--gray-700);
+            transform: translateY(-1px);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
         }
 
         @media (max-width: 768px) {
-            .emergency-container {
+            .container {
                 padding: 1rem;
-                margin: 1rem;
             }
 
-            .location-group {
-                flex-direction: column;
-            }
-
-            .emergency-header h1 {
-                font-size: 2rem;
+            .user-info,
+            .location-inputs {
+                grid-template-columns: 1fr;
             }
 
             .driver-card {
@@ -291,241 +334,449 @@
                 gap: 1rem;
             }
 
+            .driver-info {
+                flex-direction: column;
+            }
+
             .book-btn {
                 width: 100%;
             }
+
+            h1 {
+                font-size: 2rem;
+            }
         }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.5rem;
+            }
+
+            .emergency-header {
+                padding: 1.5rem;
+            }
+
+            .booking-form {
+                padding: 1.5rem;
+            }
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: relative;
+            z-index: 1;
+            
+            /* Frosted Glass Effect */
+            background: rgba(255, 255, 255, 0.2); /* Semi-transparent white background */
+            backdrop-filter: blur(10px); /* Apply blur effect to the background */
+            border-radius: 15px; /* Rounded corners */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow for prominence */
+        }
+
+        nav:hover {
+            background: rgba(255, 255, 255, 0.3); /* Slightly increased opacity when hovered */
+        }
+
+        /* Logo styling */
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff0000, #000000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Flex container for nav links */
+        .nav-links {
+            display: flex;
+            gap: 1.5rem; /* Add space between links */
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Styling for the login button */
+        #authBtn {
+            background-color: transparent; /* Blue background */
+            color: #333333; /* White text */
+            border: 2px solid transparent; /* No border */
+            padding: 8px 15px; /* Reduced padding to decrease width */
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: auto; /* Set width to auto for dynamic sizing */
+            min-width: 100px; /* Ensure the button doesn’t shrink too much */
+            max-width: 160px; /* Set a maximum width to keep it consistent */
+        }
+
+        #authBtn:hover {
+            background-color: #0056b3; /* Darker blue when hovered */
+            border-color: #003366; /* Dark border */
+        }
+
+        #authBtn:focus {
+            outline: none; /* Remove default focus outline */
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--text-light);
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .rainbow-border::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            background-size: 400%;
+            z-index: -1;
+            animation: rainbow 20s linear infinite;
+            border-radius: inherit;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .rainbow-border:hover::before {
+            opacity: 1;
+        }
+    </style>
     </style>
 </head>
 <body>
-    <div class="emergency-container">
-        <div class="emergency-header">
-            <h1>Emergency Ride Booking</h1>
-            <p>Quick access to nearby drivers for urgent situations. Priority response guaranteed.</p>
+    <nav>
+        <div class="logo">LinkRide</div>
+        <div class="nav-links">
+                <a href="/" class="btn-primary rainbow-border">Home</a>
+                <a href="/mapping" class="btn-primary rainbow-border">Maps</a>
+                <a href="/driver" class="btn-primary rainbow-border">Driver</a>
         </div>
-
-        <div class="extra-fee-notice">
-            ⚠️ Emergency bookings include a +2 credit surcharge for priority service
-        </div>
-
-        <div class="locations-form">
-            <div class="location-group">
-                <div class="location-input-wrapper start-location">
-                    <input type="text" id="start-location" class="location-input" placeholder="Enter pickup location">
-                </div>
-                <div class="location-input-wrapper end-location">
-                    <input type="text" id="end-location" class="location-input" placeholder="Enter destination">
-                </div>
+    </nav>
+    <div class="container">
+        <header class="emergency-header">
+            <div class="pulse"></div>
+            <div class="header-content">
+                <h1>Emergency Ride Booking</h1>
+                <p class="subtitle">Fast response guaranteed. Available 24/7 for urgent situations.</p>
             </div>
-            <button id="search-btn" class="search-btn">Find Emergency Rides</button>
-        </div>
+        </header>
 
-        <div id="drivers-container" class="drivers-container"></div>
+        <main>
+            <form class="booking-form" id="bookingForm">
+                <div class="user-info">
+                    <div class="input-group">
+                        <input type="text" id="userName" placeholder="Your Name" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="tel" id="userContact" placeholder="Contact Number" required>
+                    </div>
+                </div>
+                
+                <div class="location-inputs">
+                    <div class="input-group pickup">
+                        <input type="text" id="pickupLocation" placeholder="Pickup Location" required>
+                    </div>
+                    <div class="input-group destination">
+                        <input type="text" id="destination" placeholder="Destination" required>
+                    </div>
+                </div>
+                <button type="submit" class="search-btn">Find Emergency Ride</button>
+            </form>
+
+            <div class="drivers-list" id="driversList"></div>
+            <div class="pagination-controls">
+                <button id="prevBtn" class="pagination-btn" disabled>Previous</button>
+                <button id="nextBtn" class="pagination-btn">Next</button>
+            </div>
+        </main>
     </div>
 
     <script>
-        // Integrate with the database and API handling from the original code
-        async function fetchDrivers() {
-            try {
-                const response = await fetch('/api/drivers');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                const data = await response.json();
-                console.log('Fetched drivers:', data);
-                return data;
-            } catch (error) {
-                console.error('Error fetching drivers:', error);
-                return [];
-            }
+        // Add these elements to your HTML first
+const additionalHTML = `
+    <div id="booking-status-dialog" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+         background: var(--gray-800); padding: 20px; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.3); z-index: 1000;">
+        <h3>Booking Status</h3>
+        <p id="booking-status-message">Status: Pending</p>
+        <button id="booking-status-button" class="book-btn">Close</button>
+    </div>
+    <div id="loader" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 999;">
+        <div class="spinner"></div>
+    </div>
+`;
+
+document.body.insertAdjacentHTML('beforeend', additionalHTML);
+
+// Utility function to generate unique user IDs
+const generateUserId = () => Date.now();
+
+let drivers = [];
+let filteredDrivers = [];
+let currentPage = 0;
+const driversPerPage = 5;
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    const bookingStatusDialog = document.getElementById('booking-status-dialog');
+    const bookingStatusButton = document.getElementById('booking-status-button');
+    const loader = document.getElementById('loader');
+
+    bookingStatusButton.addEventListener('click', () => {
+        bookingStatusDialog.style.display = 'none';
+    });
+
+    document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const userName = document.getElementById('userName').value.trim();
+        const userContact = document.getElementById('userContact').value.trim();
+        const pickupLocation = document.getElementById('pickupLocation').value.trim();
+        const destination = document.getElementById('destination').value.trim();
+
+        if (!userName || !userContact || !pickupLocation || !destination) {
+            alert('Please fill in all fields');
+            return;
         }
 
-        // Filter drivers based on route and availability
-        function filterDrivers(drivers, start, end) {
-            return drivers.filter(driver => {
-                const matchesStart = start ? driver.routes.start.toLowerCase().includes(start.toLowerCase()) : true;
-                const matchesEnd = end ? driver.routes.end.toLowerCase().includes(end.toLowerCase()) : true;
-                return matchesStart && matchesEnd && driver.isOnline;
-            });
-        }
+        loader.style.display = 'block';
+        await fetchDrivers();
+        await bookRideForAllDrivers();
+        loader.style.display = 'none';
+    });
+});
 
-        // Display results with emergency styling
-        function displayResults(drivers) {
-            const container = document.getElementById('resultsContainer');
-            container.innerHTML = '';
+async function fetchDrivers() {
+    try {
+        const response = await fetch('/api/drivers');
+        if (!response.ok) throw new Error(`Failed to fetch drivers. Status: ${response.status}`);
+        drivers = await response.json();
+        filterDrivers();
+        return drivers;
+    } catch (error) {
+        console.error('Error fetching drivers:', error);
+        alert('Failed to load available drivers. Please try again.');
+        return [];
+    }
+}
 
-            const onlineDrivers = drivers.filter(driver => driver.isOnline);
+function filterDrivers() {
+    const pickupLocation = document.getElementById('pickupLocation').value.toLowerCase();
+    const destination = document.getElementById('destination').value.toLowerCase();
+
+    filteredDrivers = drivers.filter(driver => {
+        const serviceArea = driver.serviceArea || driver.routes?.start;
+        const destinationArea = driver.serviceArea || driver.routes?.end;
+        
+        const matchesPickup = !pickupLocation || 
+            (serviceArea && serviceArea.toLowerCase().includes(pickupLocation));
+        const matchesDestination = !destination || 
+            (destinationArea && destinationArea.toLowerCase().includes(destination));
             
-            if (onlineDrivers.length === 0) {
-                container.innerHTML = '<div class="no-results">No online drivers available at the moment. Please try again later.</div>';
-                return;
-            }
+        return matchesPickup && matchesDestination;
+    });
 
-            // Sort by response time (simulated for emergency cases)
-            onlineDrivers.forEach((driver, index) => {
-                const responseTime = Math.random() * 4 + 1; // Random response time between 1-5 seconds
-                driver.responseTime = responseTime;
-            });
+    displayDrivers(0);
+}
+function displayDrivers(page) {
+    const driversDiv = document.getElementById('driversList');
+    const start = page * driversPerPage;
+    const end = start + driversPerPage;
+    const pageDrivers = filteredDrivers.slice(start, end);
 
-            onlineDrivers.sort((a, b) => a.responseTime - b.responseTime);
-
-            onlineDrivers.forEach((driver, index) => {
-                const driverCard = document.createElement('div');
-                driverCard.className = 'driver-card';
-                driverCard.innerHTML = `
-                    <div class="driver-info">
-                        <div class="driver-name">
-                            ${driver.name}
-                            ${index === 0 ? '<span class="first-responder-badge">First Responder</span>' : ''}
-                        </div>
-                        <div class="driver-rating">★ ${driver.rating}</div>
-                        <div class="driver-details">
-                            <div>${driver.car}</div>
-                            <div>From: ${driver.routes.start}</div>
-                            <div>To: ${driver.routes.end}</div>
-                            <div>Available Seats: ${driver.seatsAvailable}</div>
-                            <div class="response-time">⏱️ Response time: ${driver.responseTime.toFixed(1)}s</div>
-                        </div>
+    driversDiv.innerHTML = pageDrivers.map(driver => `
+        <div class="driver-card" data-driver-id="${driver.id}">
+            <div class="driver-info">
+                <div class="driver-photo"></div>
+                <div class="driver-details">
+                    <h3>${driver.name}</h3>
+                    <small>${driver.vehicleType || 'Standard Vehicle'}</small>
+                    <div class="rating">
+                        ★ ${driver.rating || '4.5'}
                     </div>
-                    <button class="book-btn" onclick="bookEmergencyRide('${driver.id}')">
-                        Book Now (+2 credits)
-                    </button>
-                `;
-                container.appendChild(driverCard);
-            });
-        }
-
-        async function bookEmergencyRide(driverId) {   
-            const userName = prompt("Enter your name:");
-            const userContact = prompt("Enter your contact information:");
-            const pickupLocation = document.getElementById('startLocation').value;
-            const destination = document.getElementById('endLocation').value;
-
-            if (!userName || !userContact || !pickupLocation || !destination) {
-                alert("All fields are required to book a ride!");
-                return;
-            }
-
-            const userId = Date.now();
-            showWaitingDialog();
-
-            try {
-                const response = await fetch('/api/bookRide', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        userId,
-                        driverId,
-                        userName,
-                        userContact,
-                        pickupLocation,
-                        destination,
-                        isEmergency: true,
-                        emergencyFee: 2
-                    })
-                });
-
-                if (response.ok) {
-                    pollBookingStatus(userId, driverId);
-                } else {
-                    hideWaitingDialog();
-                    alert("Failed to send booking request. Please try again.");
-                }
-            } catch (error) {
-                hideWaitingDialog();
-                alert("An error occurred while booking. Please try again.");
-            }
-        }
-
-        function showWaitingDialog() {
-            const dialog = document.createElement('div');
-            dialog.className = 'loading-overlay';
-            dialog.id = 'bookingDialog';
-            dialog.innerHTML = `
-                <div class="status-content">
-                    <h3>Waiting for Driver Response</h3>
-                    <p>Please wait while the driver reviews your emergency request...</p>
-                    <div class="loading-spinner"></div>
+                    <span class="emergency-badge">Emergency Available</span>
+                    <div class="booking-status">Status: Not booked</div>
                 </div>
-            `;
-            document.body.appendChild(dialog);
-        }
+            </div>
+        </div>
+    `).join('');
 
-        function hideWaitingDialog() {
-            const dialog = document.getElementById('bookingDialog');
-            if (dialog) {
-                dialog.remove();
-            }
-        }
+    // Update pagination buttons
+    document.getElementById('prevBtn').disabled = page === 0;
+    document.getElementById('nextBtn').disabled = end >= filteredDrivers.length;
+}
 
-        function pollBookingStatus(userId, driverId) {
-            const statusCheck = setInterval(async () => {
-                try {
-                    const response = await fetch(`/api/bookingStatus/${userId}/${driverId}`);
-                    const data = await response.json();
-                    
-                    switch(data.status) {
-                        case 'accepted':
-                            clearInterval(statusCheck);
-                            hideWaitingDialog();
-                            showRideConfirmation(data);
-                            break;
-                        case 'rejected':
-                            clearInterval(statusCheck);
-                            hideWaitingDialog();
-                            alert("Sorry, the driver has declined your emergency request. Finding next available driver...");
-                            searchEmergencyDrivers(); // Automatically search for another driver
-                            break;
-                        case 'in-progress':
-                            updateRideStatus('Driver is on the way');
-                            break;
-                        case 'completed':
-                            clearInterval(statusCheck);
-                            hideWaitingDialog();
-                            alert("Ride completed successfully!");
-                            break;
-                    }
-                } catch (error) {
-                    console.error("Error checking booking status:", error);
-                    clearInterval(statusCheck);
-                }
-            }, 3000); // Check every 3 seconds for emergency rides
-        }
+// Add pagination event listeners
+document.getElementById('prevBtn').addEventListener('click', () => {
+    if (currentPage > 0) {
+        currentPage--;
+        displayDrivers(currentPage);
+    }
+});
 
-        function showRideConfirmation(data) {
-            alert(`Emergency ride confirmed!\nDriver: ${data.driverName}\nContact: ${data.driverContact}\nEstimated arrival: ${data.estimatedTime} minutes`);
-        }
+document.getElementById('nextBtn').addEventListener('click', () => {
+    if ((currentPage + 1) * driversPerPage < filteredDrivers.length) {
+        currentPage++;
+        displayDrivers(currentPage);
+    }
+});
+async function bookRideForAllDrivers() {
+    const userName = document.getElementById('userName').value;
+    const userContact = document.getElementById('userContact').value;
+    const pickupLocation = document.getElementById('pickupLocation').value;
+    const destination = document.getElementById('destination').value;
+    const userId = generateUserId();
 
-        function updateRideStatus(status) {
-            const dialog = document.getElementById('bookingDialog');
-            if (dialog) {
-                dialog.querySelector('p').textContent = status;
-            }
-        }
+    // Create a status dialog to show booking progress
+    const statusDialog = document.createElement('div');
+    statusDialog.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--gray-800);
+        padding: 20px;
+        border-radius: 8px;
+        z-index: 1001;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    `;
+    statusDialog.innerHTML = `
+        <h3>Booking Progress</h3>
+        <div id="bookingProgress"></div>
+    `;
+    document.body.appendChild(statusDialog);
 
-        // Event Listeners
-        document.getElementById('searchForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const startLocation = document.getElementById('startLocation').value.toLowerCase();
-            const endLocation = document.getElementById('endLocation').value.toLowerCase();
+    const progressDiv = document.getElementById('bookingProgress');
+    let successfulBookings = 0;
+
+    for (const driver of filteredDrivers) {
+        progressDiv.innerHTML += `<p>Attempting to book driver ${driver.name}...</p>`;
+        
+        const bookingData = {
+            userId,
+            driverId: driver.id,
+            userName,
+            userContact,
+            pickupLocation,
+            destination
+        };
+
+        try {
+            const response = await fetch('/api/bookRide', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bookingData)
+            });
+
+            if (!response.ok) throw new Error(`Booking failed for driver ${driver.id}`);
             
-            if (!startLocation || !endLocation) {
-                alert('Please enter both pickup and destination locations');
-                return;
-            }
+            successfulBookings++;
+            progressDiv.innerHTML += `<p style="color: #10B981">✓ Request sent to ${driver.name}</p>`;
+            updateDriverCardStatus(driver.id, 'pending');
+        } catch (error) {
+            console.error(`Error booking ride with driver ${driver.id}:`, error);
+            progressDiv.innerHTML += `<p style="color: #EF4444">✗ Failed to send request to ${driver.name}</p>`;
+            updateDriverCardStatus(driver.id, 'failed');
+        }
+    }
 
-            showWaitingDialog();
+    // Update final status
+    progressDiv.innerHTML += `
+        <p style="margin-top: 10px; font-weight: bold">
+            ${successfulBookings} out of ${filteredDrivers.length} booking requests sent successfully
+        </p>
+        <button onclick="this.parentElement.parentElement.remove()" 
+                style="background: var(--primary-red); color: white; padding: 8px 16px; 
+                border: none; border-radius: 4px; margin-top: 10px; cursor: pointer">
+            Close
+        </button>
+    `;
+
+    if (successfulBookings > 0) {
+        pollBookingStatus(userId);
+    } else {
+        alert('Failed to book with any drivers. Please try again.');
+    }
+}
+
+function updateDriverCardStatus(driverId, status) {
+    const statusElement = document.querySelector(`[data-driver-id="${driverId}"] .booking-status`);
+    if (statusElement) {
+        statusElement.textContent = `Status: ${status}`;
+        statusElement.className = `booking-status ${status.toLowerCase()}`;
+    }
+}
+
+function pollBookingStatus(userId) {
+    const bookingStatusMessage = document.getElementById('booking-status-message');
+    const pollInterval = setInterval(async () => {
+        try {
+            const response = await fetch('/api/updateBookingStatus', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    userId, 
+                    driverId: filteredDrivers[0].id, // Send first driver's ID
+                    status: 'pending'
+                })
+            });
+
+            if (!response.ok) throw new Error('Status update failed');
             
-            try {
-                const allDrivers = await fetchDrivers();
-                const availableDrivers = filterDrivers(allDrivers, startLocation, endLocation);
-                hideWaitingDialog();
-                displayResults(availableDrivers);
-            } catch (error) {
-                hideWaitingDialog();
-                alert('Error finding drivers. Please try again.');
+            const data = await response.json();
+            const status = data.status || 'pending';
+            
+            bookingStatusMessage.textContent = `Status: ${status}`;
+            
+            if (status === 'accepted') {
+                clearInterval(pollInterval);
+                alert('A driver has accepted your emergency ride! They will arrive shortly.');
+                location.reload();
+            } else if (status === 'rejected') {
+                // Continue polling as other drivers might accept
+                console.log('A driver rejected the request, waiting for others...');
             }
-        });
+        } catch (error) {
+            console.log('Error checking booking status:', error);
+            // Don't clear interval on error, keep trying
+        }
+    }, 5000);
+
+    // Stop polling after 5 minutes if no acceptance
+    setTimeout(() => {
+        clearInterval(pollInterval);
+        alert('No drivers accepted the emergency ride. Please try again.');
+        location.reload();
+    }, 300000);
+}
+
+// Initial fetch of drivers
+fetchDrivers();
     </script>
 </body>
 </html>
