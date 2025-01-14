@@ -1346,4 +1346,4 @@ const driversDatabase = [
     }   
 ];
 
-export default driversDatabase;
+module.exports = driversDatabase;
