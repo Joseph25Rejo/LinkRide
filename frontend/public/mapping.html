@@ -176,7 +176,28 @@
         .suggestion-item:hover {
             background: #f0f0f0;
         }
-    </style>
+        .metro-line {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px; /* Add spacing between lines */
+        }
+
+        .line-indicator {
+            width: 12px; /* Diameter of the dot */
+            height: 12px; /* Diameter of the dot */
+            border-radius: 50%; /* Make it a circle */
+            margin-right: 8px; /* Add space between the dot and text */
+        }
+
+        .purple-line {
+            background-color: purple; /* Color for the purple line */
+        }
+
+        .green-line {
+            background-color: green; /* Color for the green line */
+        }
+
+            </style>
 </head>
 <body>
     <div class="container">
@@ -211,8 +232,9 @@
                 <button class="button" onclick="clearRoute()">Clear Route</button>
                 <button class="button" onclick="optimizeRoute()">Optimize Route</button>
                 <button class="button" onclick="exportRoute()">Export Route</button>
-                <button class="button" onclick="toggle3D()">Toggle 3D</button>
                 <button class="button" onclick="toggleTraffic()">Toggle Traffic</button>
+                <button class="button" onclick="toggle3D()">Toggle 3D</button>
+                
             </div>
 
             <div class="control-panel">
