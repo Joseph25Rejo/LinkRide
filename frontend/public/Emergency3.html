@@ -871,8 +871,34 @@
                 const statusText = status.charAt(0).toUpperCase() + status.slice(1);
                 statusElement.textContent = `Status: ${statusText}`;
                 statusElement.className = `booking-status ${status.toLowerCase()}`;
+                
+                // Add color coding for different statuses
+                switch(status.toLowerCase()) {
+                    case 'accepted':
+                        statusElement.style.color = '#10B981'; // green
+                        break;
+                    case 'rejected':
+                        statusElement.style.color = '#EF4444'; // red
+                        break;
+                    case 'pending':
+                        statusElement.style.color = '#F59E0B'; // yellow
+                        break;
+                    case 'unavailable':
+                        statusElement.style.color = '#6B7280'; // gray
+                        break;
+                    default:
+                        statusElement.style.color = 'inherit';
+                }
             }
         }
+
+        // Add the new status to the styles
+        const additionalStyles = `
+            .booking-status.unavailable {
+                color: #6B7280 !important;
+            }
+        `;
+        document.querySelector('style').textContent += additionalStyles;
 
         async function handleBookingSubmission(formData) {
             const userId = generateUserId();
@@ -957,9 +983,17 @@
         }
 
         async function pollBookingStatus(userId) {
+            let hasAcceptedDriver = false;
+            const driverStatuses = new Map(); // Track each driver's latest status
+
             const pollInterval = setInterval(async () => {
                 try {
                     for (const driver of filteredDrivers) {
+                        // Skip checking already rejected drivers
+                        if (driverStatuses.get(driver.id) === 'rejected') {
+                            continue;
+                        }
+
                         const response = await fetch(`/api/bookingStatus/${userId}/${driver.id}`);
                         
                         if (!response.ok) {
@@ -968,53 +1002,71 @@
                         }
 
                         const data = await response.json();
-                        console.log('Received status:', data);
+                        console.log('Received status for driver', driver.id, ':', data);
+
+                        // Update the status in our tracking Map
+                        driverStatuses.set(driver.id, data.status);
                         
+                        // Update UI with current status
                         updateDriverCardStatus(driver.id, data.status);
+
+                        // Handle accepted status
                         if (data.status === 'accepted') {
-                            clearInterval(pollInterval);
-                            
-                            // Update UI with accepted status
-                            updateDriverCardStatus(driver.id, 'accepted');
-                            
-                            // Show acceptance notification
-                            alert(`Ride confirmed!\nDriver: ${data.driverName}\nContact: ${data.driverContact}`);
-                            
-                            // Highlight the accepted driver's card
-                            const driverCard = document.querySelector(`[data-driver-id="${driver.id}"]`);
-                            if (driverCard) {
-                                driverCard.style.border = '2px solid #10B981';
-                                driverCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            }
-                            return;
-                        }
-                        
-                        // Check if all drivers have rejected
-                        if (data.status === 'rejected') {
-                            const allRejected = filteredDrivers.every(d => {
-                                const statusElement = document.querySelector(
-                                    `[data-driver-id="${d.id}"] .booking-status`
-                                );
-                                return statusElement?.textContent.includes('rejected');
-                            });
-                            
-                            if (allRejected) {
+                            if (!hasAcceptedDriver) {
+                                hasAcceptedDriver = true;
+                                
+                                // Show acceptance notification
+                                alert(`Ride confirmed!\nDriver: ${data.driverName}\nContact: ${data.driverContact}`);
+                                
+                                // Highlight the accepted driver's card
+                                const driverCard = document.querySelector(`[data-driver-id="${driver.id}"]`);
+                                if (driverCard) {
+                                    driverCard.style.border = '2px solid #10B981';
+                                    driverCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }
+
+                                // Update other pending drivers to 'unavailable'
+                                for (const otherDriver of filteredDrivers) {
+                                    if (otherDriver.id !== driver.id && driverStatuses.get(otherDriver.id) === 'pending') {
+                                        updateDriverCardStatus(otherDriver.id, 'unavailable');
+                                        driverStatuses.set(otherDriver.id, 'unavailable');
+                                    }
+                                }
+
+                                // Stop polling since we have an accepted driver
                                 clearInterval(pollInterval);
-                                alert('All drivers have rejected the request. Please try booking again.');
                                 return;
                             }
+                        }
+                        
+                        // Check if all drivers have rejected or are unavailable
+                        const allRejected = Array.from(driverStatuses.values()).every(
+                            status => status === 'rejected' || status === 'unavailable'
+                        );
+                        
+                        if (allRejected && !hasAcceptedDriver) {
+                            clearInterval(pollInterval);
+                            alert('All drivers have rejected the request. Please try booking again.');
+                            return;
                         }
                     }
                 } catch (error) {
                     console.error('Error checking booking status:', error);
                 }
-            }, 3000); // Poll every 3 seconds
+            }, 3000);
 
             // Set timeout to stop polling after 5 minutes
             setTimeout(() => {
+                if (!hasAcceptedDriver) {
+                    clearInterval(pollInterval);
+                    alert('Timeout: No response from drivers. Please try booking again.');
+                }
+            }, 300000);
+            
+            // Cleanup function
+            return () => {
                 clearInterval(pollInterval);
-                alert('Timeout: No response from drivers. Please try booking again.');
-            }, 300000); // 5 minutes timeout
+            };
         }
 
         // Error handling utility
