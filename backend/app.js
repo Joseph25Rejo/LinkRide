@@ -68,7 +68,7 @@ app.post('/api/bookRide', (req, res) => {
     }
 
     const driverName = driver.name;
-    const driverContact = driver.contact;
+    const driverContact = driver.contactNumber;
 
     // Check if the driver is available (optional)
     const driverStatus = bookingStatuses.get(driverId.toString());
@@ -78,6 +78,7 @@ app.post('/api/bookRide', (req, res) => {
 
     // Save the booking request with the correct driverName
     bookingRequests.push({ userId, driverId, userName, userContact, pickupLocation, destination });
+    console.log("Driver Name : ", driverName, "Driver Contact : ", driverContact);
     bookingStatuses.set(userId.toString(), { status: 'pending', driverName: driverName , driverContact: driverContact }); // Set driverName properly here
     console.log('Booking request received:', req.body);
     res.status(201).json({ message: 'Booking request submitted successfully!' });
