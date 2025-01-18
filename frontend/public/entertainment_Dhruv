@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkRide Entertainment</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            text-align: center;
+            padding: 4rem 1rem;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .card-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-header i {
+            font-size: 1.5rem;
+            color: #1DB954;
+        }
+
+        .spotify-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background-color: #1DB954;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            text-decoration: none;
+        }
+
+        .spotify-button:hover {
+            background-color: #1ed760;
+        }
+
+        .playlist-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: #f8f8f8;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .playlist-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .features {
+            grid-column: 1 / -1;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .feature-item {
+            background-color: #f8f8f8;
+            padding: 1.5rem;
+            border-radius: 6px;
+        }
+
+        .feature-item h3 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .feature-item p {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>LinkRide Entertainment</h1>
+        <p>Make your journey more enjoyable with shared music experiences</p>
+    </header>
+
+    <div class="container">
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa-brands fa-spotify"></i>
+                    <h2>Connect with Spotify</h2>
+                </div>
+                <p>Share and discover music with your co-passengers</p>
+                <br>
+                <a href="https://spotify.com" target="_blank" class="spotify-button">
+                    <i class="fa-brands fa-spotify"></i>
+                    Link Spotify Account
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa-solid fa-music"></i>
+                    <h2>Shared Playlists</h2>
+                </div>
+                <div class="playlist-item">
+                    <span><i class="fa-solid fa-users"></i> Morning Commute Mix</span>
+                    <i class="fa-solid fa-share"></i>
+                </div>
+                <div class="playlist-item">
+                    <span><i class="fa-solid fa-users"></i> Road Trip Vibes</span>
+                    <i class="fa-solid fa-share"></i>
+                </div>
+            </div>
+
+            <div class="card features">
+                <div class="card-header">
+                    <h2>Entertainment Features</h2>
+                </div>
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <h3>Collaborative Playlists</h3>
+                        <p>Create and contribute to shared playlists with your co-passengers</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Music Preferences</h3>
+                        <p>Set your music preferences to match with like-minded riders</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Offline Mode</h3>
+                        <p>Download playlists for areas with limited connectivity</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
