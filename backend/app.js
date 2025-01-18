@@ -25,7 +25,7 @@ app.use('/mapping', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/public/mapping.html'));
 });
 app.use('/emergency', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/public/Emergency.html'));
+    res.sendFile(path.join(__dirname, '../frontend/public/Emergency3.html'));
 });
 
 app.use('/carpooling', (req,res) => {
