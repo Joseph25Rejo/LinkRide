@@ -59,21 +59,48 @@ app.post('/api/bookRide', (req, res) => {
         console.log("Validation failed");
         return res.status(400).json({ message: 'All fields are required!' });
     }
+
+    // Fetch the driver's name from the driversDatabase using the driverId
+    const driver = driversDatabase.find(driver => driver.id === driverId);
+    if (!driver) {
+        console.log("Driver not found");
+        return res.status(404).json({ message: 'Driver not found!' });
+    }
+
+    const driverName = driver.name;
+    const driverContact = driver.contact;
+
+    // Check if the driver is available (optional)
+    const driverStatus = bookingStatuses.get(driverId.toString());
+    if (driverStatus && driverStatus.status !== 'completed' && driverStatus.status !== 'pending') {
+        return res.status(400).json({ message: 'Driver is not available for booking' });
+    }
+
+    // Save the booking request with the correct driverName
     bookingRequests.push({ userId, driverId, userName, userContact, pickupLocation, destination });
-    bookingStatuses.set(userId.toString(), { status: 'pending' });
+    bookingStatuses.set(userId.toString(), { status: 'pending', driverName: driverName , driverContact: driverContact }); // Set driverName properly here
     console.log('Booking request received:', req.body);
     res.status(201).json({ message: 'Booking request submitted successfully!' });
 });
 
-app.get('/api/bookingStatus/:userId', (req, res) => {
-    const userId = req.params.userId;
-    const status = bookingStatuses.get(userId);
-    
-    // Always return a valid response with a status
-    res.status(200).json({
-        status: status?.status || 'pending'
+
+// Server route to handle booking status checks
+app.get('/api/bookingStatus/:userId/:driverId', (req, res) => {
+    const { userId, driverId } = req.params;
+    const booking = bookingStatuses.get(userId.toString());
+    console.log(booking);
+
+    if (!booking) {
+        return res.status(404).json({ message: 'Booking not found.' });
+    }
+
+    res.json({
+        status: booking.status,
+        driverName: booking.driverName,
+        driverContact: booking.driverContact,
     });
 });
+
 
 app.get('/api/getDriverDetails/:driverId', (req, res) => {
     const driverId = parseInt(req.params.driverId);
@@ -96,6 +123,7 @@ app.post('/api/updateBookingStatus', (req, res) => {
     
     // Update the booking status here
     const updatedStatus = updateBookingStatus(userId, driverId, status);
+    console.log("post request console log\nUser : ", userId, " Driver : ", driverId, " Booking Status : ", status)
     
     if (updatedStatus) {
         res.status(200).json({ status: updatedStatus });
@@ -105,17 +133,19 @@ app.post('/api/updateBookingStatus', (req, res) => {
 });
 
 function updateBookingStatus(userId, driverId, status) {
-    // Update the booking status here
-    // For example:
     const bookingStatus = bookingStatuses.get(userId.toString());
     if (bookingStatus) {
         bookingStatus.status = status;
+        bookingStatus.driverName = bookingStatus.driverName || 'Default Driver'; // Set a driver name if not set
+        bookingStatus.driverContact = bookingStatus.driverContact || 'Unknown'; // Set a driver contact if not set
         bookingStatuses.set(userId.toString(), bookingStatus);
+        console.log("User : ", userId, " Driver : ", driverId, " Booking Status : ", status);
         return bookingStatus.status;
     } else {
         return null;
     }
 }
+
 
 // Additional endpoints for ride lifecycle
 app.post('/api/startRide', (req, res) => {
@@ -141,7 +171,7 @@ app.post('/api/completeRide', (req, res) => {
     // Update status to 'completed'
     bookingStatuses.set(userId.toString(), { status: 'completed' });
     
-    // Optional: Remove the booking request
+    // Optionally: Remove the booking request or move it to another list
     const requestIndex = bookingRequests.findIndex(
         request => request.userId === userId && request.driverId === driverId
     );

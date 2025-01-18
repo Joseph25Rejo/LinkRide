@@ -660,37 +660,93 @@ V46.538
         const bookingStatusMessage = document.getElementById('booking-status-message');
         const bookingStatusDialog = document.getElementById('booking-status-dialog');
 
-        function pollBookingStatus(userId, driverId, status) {
-            console.log("polling Booking status!!");
+        function showWaitingDialog() {
+            const dialog = document.createElement('div');
+            dialog.className = 'booking-status-dialog';
+            dialog.id = 'bookingDialog';
+            dialog.innerHTML = `
+                <div class="status-content">
+                    <h3>Waiting for Driver Response</h3>
+                    <p id="dialog-status-message">Please wait while the driver reviews your request...</p>
+                    <div class="loader"></div>
+                </div>
+            `;
+            document.body.appendChild(dialog);
+        }
+
+        function hideWaitingDialog() {
+            const dialog = document.getElementById('bookingDialog');
+            if (dialog) {
+                dialog.remove();
+            }
+        }
+
+        async function updateBookingStatus(userId, driverId, status) {
+            try {
+                const response = await fetch(`/api/updateBookingStatus`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, driverId, status }),
+                });
+                return await response.json();
+            } catch (error) {
+                console.error("Error updating booking status:", error);
+                return null;
+            }
+        }
+
+        async function pollBookingStatus(userId, driverId) {
+            console.log("Polling booking status...");
+            showWaitingDialog(); // Show the waiting dialog as soon as polling starts
+
             const statusCheck = setInterval(async () => {
                 try {
-                    const response = await fetch(`/api/updateBookingStatus`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },    
-                        body: JSON.stringify({ userId, driverId, status: 'pending' })
-                    });
-                    console.log("Response:", response);
+                    const response = await fetch(`/api/bookingStatus/${userId}/${driverId}`);
+                    console.log(response)
                     const data = await response.json();
-                    console.log("Data:", data);
-                    console.log("Data status:", data.status);
+                    console.log("Data received:", data);
 
                     if (data.status) {
                         clearInterval(statusCheck);
+                        hideWaitingDialog(); // Hide the waiting dialog once we have a response
+
                         bookingStatusMessage.textContent = `Status: ${data.status}`;
                         bookingStatusDialog.style.display = 'block';
 
-                        if (data.status === "accepted") {
-                            alert(`Booking accepted! Enjoy your ride.`);
-                        } else if (data.status === "rejected") {
-                            alert("Booking rejected by the driver.");
+                        switch (data.status) {
+                            case 'accepted':
+                                alert(`Booking accepted! Driver: ${data.driverName}, Contact: ${data.driverContact}`);
+                                break;
+                            case 'rejected':
+                                alert("Booking rejected by the driver.");
+                                break;
+                            case 'in-progress':
+                                updateRideStatus('Driver is on the way');
+                                break;
+                            case 'completed':
+                                alert("Ride completed successfully!");
+                                break;
                         }
                     }
                 } catch (error) {
-                    console.error("Error checking booking status:", error);
+                    console.error("Error polling booking status:", error);
                     clearInterval(statusCheck);
+                    hideWaitingDialog(); // Hide the dialog in case of an error
                 }
-            }, 5000);
+            }, 5000); // Poll every 5 seconds
         }
+
+        function updateRideStatus(status) {
+            const dialog = document.getElementById('bookingDialog');
+            if (dialog) {
+                dialog.querySelector('#dialog-status-message').textContent = status;
+            }
+        }
+
+        // Example Usage:
+        // showWaitingDialog();
+        // pollBookingStatus('user123', 'driver456');
+
     </script>
 </body>
 </html>
