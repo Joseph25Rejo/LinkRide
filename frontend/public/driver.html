@@ -31,32 +31,29 @@
             color: var(--gray-800);
         }
 
-        .navbar {
-            background: white;
-            padding: 1rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+        /* Navbar styling */
+.navbar {
+    background: white;
+    padding: 1.5rem 5%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
+/* Container styling */
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
 
-        .navbar-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
+/* Navbar content styling */
+.navbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
         .driver-status {
             display: flex;
@@ -546,11 +543,11 @@
 
     /* Logo styles */
     .logo {
-        font-size: 24px;
+        font-size: 2rem;
         font-weight: bold;
         color: white;
         display: flex;
-        align-items: center;
+        align-items: left;
         gap: 8px;
     }
 
@@ -618,13 +615,13 @@
                         <div class="note" style="left:85%; top:50%;">♫</div>
                     </div>
                 </button>
-            </div>
-            <div class="driver-status">
-                <span>Online Status</span>
-                <label class="status-toggle">
-                    <input type="checkbox" checked>
-                    <span class="slider"></span>
-                </label>
+                <div class="driver-status">
+                    <span>Online Status</span>
+                    <label class="status-toggle">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
             </div>
         </div>
     </nav>

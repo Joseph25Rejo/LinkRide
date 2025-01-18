@@ -278,16 +278,6 @@
         opacity: 0.4;
     }
 
-    /* Logo styles */
-    .logo {
-        font-size: 24px;
-        font-weight: bold;
-        color: white;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
     /* Responsive adjustments */
     @media (max-width: 768px) {
         nav {
