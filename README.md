@@ -31,7 +31,7 @@ A simple carpooling application designed for students to find and offer rides to
     cd backend
 3. **Install Dependencies**:
    ```bash
-   npm install express body-parser sqlite3
+   npm i
 4. **Start Backend Server**:
     ```bash
     nodemon app.js
