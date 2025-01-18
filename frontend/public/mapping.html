@@ -234,7 +234,6 @@
                 <button class="button" onclick="exportRoute()">Export Route</button>
                 <button class="button" onclick="toggleTraffic()">Toggle Traffic</button>
                 <button class="button" onclick="toggle3D()">Toggle 3D</button>
-                
             </div>
 
             <div class="control-panel">
@@ -738,10 +737,15 @@
         }
 
         function exportRoute() {
+        try {
+            if (!waypoints || waypoints.length === 0) {
+                console.error('No waypoints found');
+                return;
+            }
+
             const routeData = {
                 waypoints: waypoints,
-                timestamp: new Date().toISOString(),
-                summary: document.getElementById('route-summary').innerText
+                timestamp: new Date().toISOString()
             };
             
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(routeData));
@@ -751,7 +755,10 @@
             document.body.appendChild(downloadAnchorNode);
             downloadAnchorNode.click();
             downloadAnchorNode.remove();
+        } catch (error) {
+            console.error('Error exporting route:', error);
         }
+    }
     </script>
 </body>
 </html>
