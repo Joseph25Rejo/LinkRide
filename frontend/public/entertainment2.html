@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkRide Entertainment</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root[light-theme = 'light'] {
+            --primary-color: #2a2a2a;
+            --accent-color: #4a90e2;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            text-align: center;
+            padding: 4rem 1rem;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .card-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-header i {
+            font-size: 1.5rem;
+            color: #1DB954;
+        }
+
+        .spotify-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background-color: #1DB954;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            text-decoration: none;
+        }
+
+        .spotify-button:hover {
+            background-color: #1ed760;
+        }
+
+        .playlist-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: #f8f8f8;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .playlist-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .features {
+            grid-column: 1 / -1;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .feature-item {
+            background-color: #f8f8f8;
+            padding: 1.5rem;
+            border-radius: 6px;
+        }
+
+        .feature-item h3 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .feature-item p {
+            color: #666;
+        }
+        /* Styling for the nav bar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, #1db954, #1ed760);
+            padding: 8px 20px;
+            height: 64px;
+        }
+        /* Styling for the logo */
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Space between text and icon */
+        }
+
+        /* Spotify icon styling */
+        .logo i {
+            font-size: 20px;
+            color: white;
+        }
+
+        /* Styling for navigation links */
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #dfff00, #00ff80, #00dfff); /* Gradient colors */
+            color: white; /* White text for contrast */
+            padding: 1rem 3rem; /* Adjust padding for oval proportions */
+            border: none;
+            border-radius: 30px; /* Oval shape */
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Soft shadow */
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px); /* Lift effect */
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+        }
+        .rainbow-border::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(
+                45deg,
+                #ff0000,
+                #ff7300,
+                #fffb00,
+                #48ff00,
+                #00ffd5,
+                #002bff,
+                #7a00ff,
+                #ff00c8,
+                #ff0000
+            );
+            background-size: 400%;
+            z-index: -1;
+            animation: rainbow 20s linear infinite;
+            border-radius: inherit; /* Matches the rounded button */
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .rainbow-border:hover::before {
+            opacity: 1;
+        }
+        .map-button {
+            position: relative;
+            width: 120px;
+            height: 40px;
+            cursor: pointer;
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .map-background {
+            position: absolute;
+            inset: 0;
+            background: 
+                linear-gradient(90deg, transparent 50%, rgba(255, 255, 255, 0.5) 50%),
+                linear-gradient(transparent 50%, rgba(255, 255, 255, 0.5) 50%),
+                radial-gradient(circle at 30% 40%, #a5d6a7 15%, transparent 16%),
+                radial-gradient(circle at 70% 60%, #a5d6a7 10%, transparent 11%),
+                radial-gradient(circle at 50% 50%, #81c784 8%, transparent 9%),
+                radial-gradient(circle at 80% 20%, #64b5f6 20%, transparent 21%);
+            background-size: 16px 16px, 16px 16px, 80px 80px, 80px 80px, 80px 80px, 80px 80px;
+            opacity: 0.3;
+        }
+
+        .location-marker {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            left: 20px;
+            transform: translate(0, 0);
+            animation: pulse 2s infinite;
+        }
+
+        .location-marker::before {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #f44336;
+            border-radius: 50%;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .location-marker::after {
+            content: '';
+            position: absolute;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 6px solid #f44336;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .map-button span {
+            margin-left: 24px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1;
+        }
+
+        /* Animation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* Hover effects */
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .map-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .map-button:hover .map-background {
+            opacity: 0.4;
+        }
+
+        /* Logo styles */
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            nav {
+                padding: 8px 12px;
+            }
+            
+            .btn-primary, .map-button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                gap: 10px;
+            }
+
+            .nav-links a {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            LinkRide <i class="fa-brands fa-spotify"></i>
+        </div>
+        <div class="nav-links">
+            <a href="/" class="btn-primary rainbow-border">Home</a>
+            <button class="map-button" onclick="window.location.href='/mapping'">
+                <div class="map-background"></div>
+                <div class="location-marker"></div>
+                <div class="compass"></div>
+                <div class="scale"></div>
+                <span>Maps</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa-brands fa-spotify"></i>
+                    <h2>Connect with Spotify</h2>
+                </div>
+                <p>Share and discover music with your co-passengers</p>
+                <br>
+                <a href="https://spotify.com" target="_blank" class="spotify-button">
+                    <i class="fa-brands fa-spotify"></i>
+                    Link Spotify Account
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa-solid fa-music"></i>
+                    <h2>Shared Playlists</h2>
+                </div>
+                <div class="playlist-item">
+                    <span><i class="fa-solid fa-users"></i> Morning Commute Mix</span>
+                    <i class="fa-solid fa-share"></i>
+                </div>
+                <div class="playlist-item">
+                    <span><i class="fa-solid fa-users"></i> Road Trip Vibes</span>
+                    <i class="fa-solid fa-share"></i>
+                </div>
+            </div>
+
+            <div class="card features">
+                <div class="card-header">
+                    <h2>Entertainment Features</h2>
+                </div>
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <h3>Collaborative Playlists</h3>
+                        <p>Create and contribute to shared playlists with your co-passengers</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Music Preferences</h3>
+                        <p>Set your music preferences to match with like-minded riders</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Offline Mode</h3>
+                        <p>Download playlists for areas with limited connectivity</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

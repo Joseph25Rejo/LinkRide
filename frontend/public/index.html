@@ -18,10 +18,27 @@
             <a href="/carpooling" class="btn-primary rainbow-border">Carpool</a>
             <a href="/emergency" class="btn-primary rainbow-border">Emergency</a>
             <a href="#experiences" class="btn-primary rainbow-border">How It Works</a>
-            <a href="/mapping" class="btn-primary rainbow-border">Maps</a>
             <a href="/driver" class="btn-primary rainbow-border">Driver</a>
             <a href="/about" class="btn-primary rainbow-border">About Us</a>
-            <a href="/entertainment" class="btn-primary rainbow-border">Entertainment</a>
+            <button class="map-button" onclick="window.location.href='/mapping'">
+                <div class="map-background"></div>
+                <div class="location-marker"></div>
+                <div class="compass"></div>
+                <div class="scale"></div>
+                <span>Maps</span>
+            </button>
+            <button class="music-button" onclick="window.location.href='/entertainment'">
+                <div class="equalizer">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+                <span>Music</span>
+                <div class="notes-container">
+                    <div class="note" style="left:75%; top:50%;">♪</div>
+                    <div class="note" style="left:85%; top:50%;">♫</div>
+                </div>
+            </button>
         </div>
     </nav>
     <header>

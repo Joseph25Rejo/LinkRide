@@ -102,7 +102,227 @@
     .nav-links a:hover {
         color: var(--accent-color);
     }
+    .music-button {
+        position: relative;
+        width: 120px;
+        height: 38px;
+        border: none;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.95);
+        cursor: pointer;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
 
+    .equalizer {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        gap: 3px;
+        height: 16px;
+    }
+
+    .bar {
+        width: 3px;
+        background: #1DB954;
+        border-radius: 1px;
+        animation: equalize 1s ease-in-out infinite;
+    }
+
+    .bar:nth-child(1) { animation-delay: 0s; }
+    .bar:nth-child(2) { animation-delay: 0.2s; }
+    .bar:nth-child(3) { animation-delay: 0.4s; }
+
+    .music-button span {
+        position: relative;
+        color: #333;
+        font-weight: 500;
+        margin-left: 25px;
+        z-index: 1;
+    }
+
+    .notes-container {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+    }
+
+    .note {
+        position: absolute;
+        font-size: 12px;
+        color: #1DB954;
+        opacity: 0;
+        transition: all 0.3s;
+    }
+
+    .music-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .music-button:hover .note {
+        animation: float 2s ease-in-out infinite;
+        opacity: 1;
+    }
+
+    @keyframes equalize {
+        0% { height: 4px; }
+        50% { height: 16px; }
+        100% { height: 4px; }
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(10px);
+            opacity: 0;
+        }
+        50% {
+            transform: translateY(-15px);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-30px);
+            opacity: 0;
+        }
+    }
+    .map-button {
+        position: relative;
+        width: 120px;
+        height: 40px;
+        cursor: pointer;
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .map-background {
+        position: absolute;
+        inset: 0;
+        background: 
+            linear-gradient(90deg, transparent 50%, rgba(255, 255, 255, 0.5) 50%),
+            linear-gradient(transparent 50%, rgba(255, 255, 255, 0.5) 50%),
+            radial-gradient(circle at 30% 40%, #a5d6a7 15%, transparent 16%),
+            radial-gradient(circle at 70% 60%, #a5d6a7 10%, transparent 11%),
+            radial-gradient(circle at 50% 50%, #81c784 8%, transparent 9%),
+            radial-gradient(circle at 80% 20%, #64b5f6 20%, transparent 21%);
+        background-size: 16px 16px, 16px 16px, 80px 80px, 80px 80px, 80px 80px, 80px 80px;
+        opacity: 0.3;
+    }
+
+    .location-marker {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        left: 20px;
+        transform: translate(0, 0);
+        animation: pulse 2s infinite;
+    }
+
+    .location-marker::before {
+        content: '';
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: #f44336;
+        border-radius: 50%;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .location-marker::after {
+        content: '';
+        position: absolute;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 6px solid #f44336;
+        bottom: -4px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .map-button span {
+        margin-left: 24px;
+        color: #333;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 1;
+    }
+
+    /* Animation */
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+
+    /* Hover effects */
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .map-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .map-button:hover .map-background {
+        opacity: 0.4;
+    }
+
+    /* Logo styles */
+    .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        nav {
+            padding: 8px 12px;
+        }
+        
+        .btn-primary, .map-button {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+    }
+
+    .nav-links a:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        nav {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .nav-links {
+            flex-direction: column;
+            width: 100%;
+            gap: 10px;
+        }
+
+        .nav-links a {
+            width: 100%;
+            text-align: center;
+        }
+        
+    }
     /* Styling for the login button */
     #authBtn {
         background-color: transparent; /* Blue background */

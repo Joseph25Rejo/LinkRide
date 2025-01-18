@@ -33,7 +33,7 @@ app.use('/carpooling', (req,res) => {
 });
 
 app.use('/entertainment', (req,res) => {
-    res.sendFile(path.join(__dirname, "../frontend/public/entertainment1.html"));
+    res.sendFile(path.join(__dirname, "../frontend/public/entertainment3.html"));
 });
 
 app.get('/about', (req, res) => {   
