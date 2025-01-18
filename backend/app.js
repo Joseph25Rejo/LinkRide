@@ -32,6 +32,10 @@ app.use('/carpooling', (req,res) => {
     res.sendFile(path.join(__dirname, "../frontend/public/carpooling4.html"));
 });
 
+app.use('/entertainment', (req,res) => {
+    res.sendFile(path.join(__dirname, "../frontend/public/entertainment1.html"));
+});
+
 app.get('/about', (req, res) => {   
     console.log("about");
     res.sendFile(path.join(__dirname, '../frontend/public/about.html'));
