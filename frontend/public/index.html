@@ -99,8 +99,8 @@
                     <h3>Emergency Contacts</h3>
                     <p>In case of an emergency or any issue with the carpool, please contact:</p>
                     <ul>
-                        <li><strong>RVCE Security</strong>: +91-8431187843</li>
-                        <li><strong>Carpool Coordinator</strong>: +91-8431187843</li>
+                        <li><strong>RVCE Security</strong>: 080 6818 8100</li>
+                        <li><strong>Carpool Coordinator</strong>:080 6818 8100</li>
                         <li><strong>Emergency Ambulance</strong>: 108</li>
                     </ul>
                 </div>
@@ -169,41 +169,232 @@
 
     <!-- JavaScript for Modal -->
     <script>
-        const modal = document.getElementById('authModal');
-        const closeModal = document.getElementById('closeModal');
+        // Global variables
+            let currentSlide = 0;
+            const cards = document.querySelectorAll('.route-card');
+            const slider = document.querySelector('.route-list-slider');
+            const totalSlides = cards.length;
+            const cardWidth = 300; // Width of each card plus margin
+            const slidesVisible = 3; // Number of cards visible at once
 
-        function openModal() {
-            modal.style.display = 'block';
-        }
-
-        closeModal.onclick = function () {
-            modal.style.display = 'none';
-        }
-
-        window.onclick = function (event) {
-            if (event.target === modal) {
-                modal.style.display = 'none';
+            // Carousel Navigation
+            function moveSlide(direction) {
+                const maxSlides = totalSlides - slidesVisible;
+                
+                currentSlide = Math.max(0, Math.min(currentSlide + direction, maxSlides));
+                updateSliderPosition();
+                updateNavigationButtons();
             }
-        }
 
-        // Open modal on button click
-        document.getElementById('authBtn').addEventListener('click', openModal);
+            function updateSliderPosition() {
+                const offset = -currentSlide * cardWidth;
+                slider.style.transform = `translateX(${offset}px)`;
+            }
 
-        // Toggle between login and signup forms
-        document.getElementById('showSignup').addEventListener('click', function() {
-            document.getElementById('loginForm').classList.add('hidden');
-            document.getElementById('signupForm').classList.remove('hidden');
-        });
+            function updateNavigationButtons() {
+                const leftBtn = document.querySelector('.left-btn');
+                const rightBtn = document.querySelector('.right-btn');
+                
+                leftBtn.disabled = currentSlide === 0;
+                rightBtn.disabled = currentSlide >= totalSlides - slidesVisible;
+                
+                // Update button opacity based on state
+                leftBtn.style.opacity = leftBtn.disabled ? '0.5' : '1';
+                rightBtn.style.opacity = rightBtn.disabled ? '0.5' : '1';
+            }
 
-        document.getElementById('showLogin').addEventListener('click', function() {
-            document.getElementById('signupForm').classList.add('hidden');
-            document.getElementById('loginForm').classList.remove('hidden');
-        });
+            // Join Carpool Button Handler
+            document.querySelectorAll('.btn-primary').forEach(button => {
+                if (button.textContent === 'Join Carpool') {
+                    button.addEventListener('click', handleJoinCarpool);
+                }
+            });
 
-        // Navigate to a different page
-        function navigateTo(path) {
-            window.location.href = path;
-        }
+            function handleJoinCarpool(event) {
+                const button = event.target;
+                const card = button.closest('.route-card');
+                const route = card.querySelector('h3').textContent;
+                
+                // Show confirmation dialog
+                const confirmed = confirm(`Would you like to join the carpool for ${route}?`);
+                
+                if (confirmed) {
+                    button.textContent = 'Joined';
+                    button.classList.add('joined');
+                    button.disabled = true;
+                    
+                    // You can add API call here to update backend
+                    notifyJoinSuccess(route);
+                }
+            }
+
+            function notifyJoinSuccess(route) {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <p>Successfully joined carpool for ${route}</p>
+                        <button onclick="this.parentElement.parentElement.remove()">✕</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Remove notification after 5 seconds
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+            }
+
+            // Experience Cards Animation
+            function setupExperienceCards() {
+                const cards = document.querySelectorAll('.experience-card');
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('visible');
+                            }
+                        });
+                    },
+                    {
+                        threshold: 0.1,
+                        rootMargin: '0px 0px -50px 0px'
+                    }
+                );
+                
+                cards.forEach(card => observer.observe(card));
+            }
+
+            // Modal Handling
+            function setupModal() {
+                const modal = document.getElementById('authModal');
+                const closeBtn = document.getElementById('closeModal');
+                const authBtn = document.getElementById('authBtn');
+                
+                if (authBtn) {
+                    authBtn.addEventListener('click', () => {
+                        modal.style.display = 'block';
+                    });
+                }
+                
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', () => {
+                        modal.style.display = 'none';
+                    });
+                }
+                
+                window.addEventListener('click', (event) => {
+                    if (event.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            }
+
+            // Form Switching
+            function setupFormSwitching() {
+                const showSignupBtn = document.getElementById('showSignup');
+                const showLoginBtn = document.getElementById('showLogin');
+                const loginForm = document.getElementById('loginForm');
+                const signupForm = document.getElementById('signupForm');
+                
+                if (showSignupBtn) {
+                    showSignupBtn.addEventListener('click', () => {
+                        loginForm.classList.add('hidden');
+                        signupForm.classList.remove('hidden');
+                    });
+                }
+                
+                if (showLoginBtn) {
+                    showLoginBtn.addEventListener('click', () => {
+                        signupForm.classList.add('hidden');
+                        loginForm.classList.remove('hidden');
+                    });
+                }
+            }
+
+            // Add smooth scrolling for navigation
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Initialize everything when DOM is loaded
+            document.addEventListener('DOMContentLoaded', () => {
+                setupExperienceCards();
+                setupModal();
+                setupFormSwitching();
+                updateNavigationButtons();
+                
+                // Add keyboard navigation for carousel
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowLeft') {
+                        moveSlide(-1);
+                    } else if (e.key === 'ArrowRight') {
+                        moveSlide(1);
+                    }
+                });
+            });
+
+            // Add CSS for notifications
+            const style = document.createElement('style');
+            style.textContent = `
+                .notification {
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    background: #4CAF50;
+                    color: white;
+                    padding: 15px;
+                    border-radius: 4px;
+                    animation: slideIn 0.5s ease-out;
+                    z-index: 1000;
+                }
+                
+                .notification-content {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+                
+                .notification button {
+                    background: none;
+                    border: none;
+                    color: white;
+                    cursor: pointer;
+                }
+                
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+                
+                .route-card {
+                    transition: transform 0.3s ease;
+                }
+                
+                .route-card:hover {
+                    transform: translateY(-5px);
+                }
+                
+                .joined {
+                    background-color: #45a049 !important;
+                    cursor: not-allowed;
+                }
+            `;
+
+            document.head.appendChild(style);
     </script>
 </body>
 

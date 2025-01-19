@@ -19,6 +19,7 @@
         line-height: 1.6;
         color: var(--text-dark);
         overflow-x: hidden;
+        background-color: #005eff94;
     }
 
     /* Animations */
@@ -675,39 +676,134 @@
     }
 
     /* Emergency and Fare Section */
+    /* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7fc;
+}
+
+/* Main Container */
+.carpool-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    flex-wrap: wrap;
+    width: 90%;
+    margin: 20px auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.carpool-info:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Headings */
+h3 {
+    font-size: 1.6em;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+    transition: color 0.3s ease;
+}
+
+h3:hover {
+    color: #007bff;
+}
+
+/* Emergency Contacts Section */
+.emergency-contact,
+.car-fare {
+    flex: 1;
+    min-width: 250px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.emergency-contact:hover,
+.car-fare:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Emergency Contact Paragraph */
+.emergency-contact p {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+/* Contact List */
+.emergency-contact ul {
+    list-style: none;
+    padding: 0;
+}
+
+.emergency-contact li {
+    font-size: 1.1em;
+    color: #333;
+    margin: 10px 0;
+}
+
+.emergency-contact strong {
+    color: #007bff;
+    transition: color 0.3s ease;
+}
+
+.emergency-contact strong:hover {
+    color: #ff5722;
+}
+
+/* Car Fare Incentives Section */
+.car-fare p {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.car-fare ul {
+    list-style: none;
+    padding: 0;
+}
+
+.car-fare li {
+    font-size: 1.1em;
+    color: #333;
+    margin: 10px 0;
+}
+
+.car-fare strong {
+    color: #28a745;
+    transition: color 0.3s ease;
+}
+
+.car-fare strong:hover {
+    color: #ff5722;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
     .carpool-info {
-        margin-top: 4rem;
-        display: flex;
-        justify-content: space-between;
+        flex-direction: column;
+        align-items: center;
     }
 
-    .emergency-contact, .car-fare {
-        flex: 1;
-        background-color: #fff;
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    .emergency-contact,
+    .car-fare {
+        flex: none;
+        width: 100%;
+        margin-bottom: 20px;
     }
-
-    .emergency-contact h3, .car-fare h3 {
-        font-size: 1.6rem;
-        margin-bottom: 1.5rem;
-        color: var(--primary-color);
-    }
-
-    .emergency-contact ul, .car-fare ul {
-        list-style-type: none;
-        padding: 0;
-    }
-
-    .emergency-contact li, .car-fare li {
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
-    }
-
-    .car-fare li {
-        font-weight: bold;
-    }
+}
     .carousel-container {
         position: relative;
         width: 100%;

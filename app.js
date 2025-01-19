@@ -8,16 +8,17 @@ dotenv.config();
 import driversDatabase from './frontend/src/js/database.js';
 const app = express();
 const bookingRequests = [];
-const bookingStatuses = new Map(); // Add this line to define bookingStatuses
+const bookingStatuses = new Map();
 const PORT = process.env.PORT || 5000;
 
 
-// Resolve directory name
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Middleware
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, './frontend/src')));
+app.use(express.static(path.join(__dirname, 'frontend/public')));
+app.use(express.static(path.join(__dirname, 'frontend/src')));
+app.use('/css', express.static(path.join(__dirname, 'frontend/src/css')));
 
 // Routes
 app.get('/', (req, res) => {
