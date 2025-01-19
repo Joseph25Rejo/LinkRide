@@ -698,79 +698,6 @@
                 alert("Failed to load driver details. Please try again.");
             }
         }
-        async function updateDashboard() {
-            try {
-                // Fetch driver details
-                const driverResponse = await fetch(`/api/drivers/${driverId}`);
-                const driverData = await driverResponse.json();
-
-                // Fetch current requests
-                const requestsResponse = await fetch(`/api/requests/${driverId}`);
-                const requestsData = await requestsResponse.json();
-
-                // Fetch accepted rides
-                const ridesResponse = await fetch(`/api/acceptedRides/${driverId}`);
-                const ridesData = await ridesResponse.json();
-
-                // Update driver details
-                updateDriverStatCards(driverData);
-
-                // Update requests
-                updateRequestsContainer(requestsData);
-
-                // Update accepted rides
-                updateAcceptedRidesContainer(ridesData);
-
-            } catch (error) {
-                console.error('Dashboard update error:', error);
-            }
-        }
-        function updateRequestsContainer(requests) {
-            const container = document.getElementById('requestsContainer');
-            
-            // Clear existing requests
-            container.innerHTML = '';
-
-            // If no requests
-            if (requests.length === 0) {
-                container.innerHTML = `
-                    <div class="no-requests">
-                        <i class="fas fa-inbox fa-3x"></i>
-                        <p>No booking requests available</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Render new requests
-            requests.forEach(request => {
-                const requestCard = createRequestCard(request);
-                container.innerHTML += requestCard;
-            });
-        }
-        function updateAcceptedRidesContainer(rides) {
-                    const container = document.getElementById('acceptedRidesContainer');
-                    
-                    // Clear existing rides
-                    container.innerHTML = '';
-
-                    // If no accepted rides
-                    if (rides.length === 0) {
-                        container.innerHTML = `
-                            <div class="empty-dashboard">
-                                <i class="fas fa-car fa-3x"></i>
-                                <p>No accepted rides at the moment</p>
-                            </div>
-                        `;
-                        return;
-                    }
-
-                    // Render accepted rides
-                    rides.forEach(ride => {
-                        const rideCard = createAcceptedRideCard(ride);
-                        container.innerHTML += rideCard;
-                    });
-                }
         function updateDriverStatCards() {
                 if (!currentDriver) return;
 
@@ -907,7 +834,6 @@
                     return '';
             }
         }
-
         function acceptRequest(userId) {
             const requestCard = document.getElementById(`request-${userId}`);
             console.log("Accepted :", currentDriver.id);
@@ -927,17 +853,41 @@
                     // Update local state
                     bookingStatuses.set(userId, 'accepted');
                     acceptedRequests.add(userId);
+                    console.log("Current Request : ", currentRequests);
 
-                    // Move to accepted rides
-                    const request = currentRequests.find(req => req.userId === userId);
+                    // Find the request in the current requests list
+                    const request = currentRequests.find(req => req.userId.toString() === userId.toString());
+                    console.log("Request: ", request);
+
                     if (request) {
-                        acceptedRides.push(request);
-                        updateAcceptedRidesDashboard();
+                        // Check if the request is already in acceptedRides to prevent duplicates
+                        const isDuplicate = acceptedRides.some(ride => ride.userId.toString() === userId.toString());
+                        if (!isDuplicate) {
+                            // Add the accepted request to acceptedRides
+                            acceptedRides.push(request);
+                            
+                            // Create the accepted ride card and append it to the container
+                            const container = document.getElementById('acceptedRidesContainer');
+                            const acceptedRideCard = createAcceptedRideCard({
+                                ...request,
+                                status: 'accepted'
+                            });
+                            console.log(acceptedRideCard);
+                            console.log("HI");
+                            container.innerHTML += acceptedRideCard;
+                        } else {
+                            console.log("Ride already accepted");
+                        }
                     }
 
-                    // Refresh requests
+                    // Optionally, remove the original request card from the requests container
+                    requestCard.remove();
+
+                    // Refresh the list of requests (if needed)
                     refreshRequests();
                 }
+            }).catch(error => {
+                console.error('Error accepting request:', error);
             });
         }
         function declineRequest(userId) {

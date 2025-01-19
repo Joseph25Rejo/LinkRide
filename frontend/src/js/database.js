@@ -1503,4 +1503,4 @@ const driversDatabase = [
     }   
 ];
 
-module.exports = driversDatabase;
+export default driversDatabase;

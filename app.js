@@ -3,47 +3,50 @@ import bodyParser from 'body-parser';
 import path from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import driversDatabase from '../frontend/src/js/database.js';
+import dotenv from "dotenv"
+dotenv.config();
+import driversDatabase from './frontend/src/js/database.js';
 const app = express();
 const bookingRequests = [];
 const bookingStatuses = new Map(); // Add this line to define bookingStatuses
 const PORT = process.env.PORT || 5000;
+
 
 // Resolve directory name
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Middleware
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, '../frontend/src')));
+app.use(express.static(path.join(__dirname, './frontend/src')));
 
 // Routes
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/public/index.html'));
+    res.sendFile(path.join(__dirname, './frontend/public/index.html'));
 });
 
 app.use('/mapping', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/public/mapping.html'));
+    res.sendFile(path.join(__dirname, './frontend/public/mapping.html'));
 });
 app.use('/emergency', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/public/Emergency3.html'));
+    res.sendFile(path.join(__dirname, './frontend/public/Emergency3.html'));
 });
 
 app.use('/carpooling', (req,res) => {
-    res.sendFile(path.join(__dirname, "../frontend/public/carpooling4.html"));
+    res.sendFile(path.join(__dirname, "./frontend/public/carpooling4.html"));
 });
 
 app.use('/entertainment', (req,res) => {
-    res.sendFile(path.join(__dirname, "../frontend/public/entertainment3.html"));
+    res.sendFile(path.join(__dirname, "./frontend/public/entertainment3.html"));
 });
 
 app.get('/about', (req, res) => {   
     console.log("about");
-    res.sendFile(path.join(__dirname, '../frontend/public/about.html'));
+    res.sendFile(path.join(__dirname, './frontend/public/about.html'));
 });
 
 app.get('/driver', (req, res) => {   
     console.log("driver page accessed");
-    res.sendFile(path.join(__dirname, '../frontend/public/driver.html'));
+    res.sendFile(path.join(__dirname, './frontend/public/driver.html'));
 });
 app.get('/api/drivers', (req, res) => {
     console.log("Request to get all drivers");
@@ -112,15 +115,6 @@ app.get('/api/getDriverDetails/:driverId', (req, res) => {
     }
 
     res.status(200).json(driver);
-});
-
-app.get('/api/getAcceptedRides/:driverId', (req, res) => {
-    const driverId = parseInt(req.params.driverId);
-    const acceptedRides = bookingRequests
-        .filter(request => request.driverId === driverId)
-        .filter(request => bookingStatuses.get(request.userId.toString())?.status === 'accepted');
-
-    res.status(200).json(acceptedRides);
 });
 
 // New endpoint to update booking status
