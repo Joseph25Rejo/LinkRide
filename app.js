@@ -93,7 +93,7 @@ app.post('/api/bookRide', (req, res) => {
 app.get('/api/bookingStatus/:userId/:driverId', (req, res) => {
     const { userId, driverId } = req.params;
     const booking = bookingStatuses.get(userId.toString());
-    console.log(booking);
+    console.log("Booking status request:", booking);
 
     if (!booking) {
         return res.status(404).json({ message: 'Booking not found.' });
@@ -101,8 +101,10 @@ app.get('/api/bookingStatus/:userId/:driverId', (req, res) => {
 
     res.json({
         status: booking.status,
-        driverName: booking.driverName,
-        driverContact: booking.driverContact,
+        driverName: booking.driverName || 'Default Driver',
+        driverContact: booking.driverContact || 'Unknown',
+        message: booking.message || '', // Include the message in response
+        timestamp: booking.timestamp || Date.now() // Optional: Add timestamp for tracking
     });
 });
 
@@ -120,15 +122,15 @@ app.get('/api/getDriverDetails/:driverId', (req, res) => {
 
 // New endpoint to update booking status
 app.post('/api/updateBookingStatus', (req, res) => {
-    const { userId, driverId, status } = req.body;
+    const { userId, driverId, status, message } = req.body;
     
     if (!userId || !driverId || !status) {
         return res.status(400).json({ message: 'Missing required fields' });
     }
     
     // Update the booking status here
-    const updatedStatus = updateBookingStatus(userId, driverId, status);
-    console.log("post request console log\nUser : ", userId, " Driver : ", driverId, " Booking Status : ", status)
+    const updatedStatus = updateBookingStatus(userId, driverId, status, message);
+    console.log("post request console log\nUser : ", userId, " Driver : ", driverId, " Booking Status : ", status,"Message: ", message)
     
     if (updatedStatus) {
         res.status(200).json({ status: updatedStatus });
@@ -137,12 +139,13 @@ app.post('/api/updateBookingStatus', (req, res) => {
     }
 });
 
-function updateBookingStatus(userId, driverId, status) {
+function updateBookingStatus(userId, driverId, status, message) {
     const bookingStatus = bookingStatuses.get(userId.toString());
     if (bookingStatus) {
         bookingStatus.status = status;
         bookingStatus.driverName = bookingStatus.driverName || 'Default Driver'; // Set a driver name if not set
         bookingStatus.driverContact = bookingStatus.driverContact || 'Unknown'; // Set a driver contact if not set
+        bookingStatus.message = message || '';
         bookingStatuses.set(userId.toString(), bookingStatus);
         console.log("User : ", userId, " Driver : ", driverId, " Booking Status : ", status);
         return bookingStatus.status;

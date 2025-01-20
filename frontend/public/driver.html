@@ -584,7 +584,76 @@
             width: 100%;
             text-align: center;
         }
-        
+    }
+
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+        position: relative;
+    }
+
+    .modal textarea {
+        width: 100%;
+        margin: 10px 0;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        resize: vertical;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 15px;
+    }
+
+    .button-group button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .button-group button:first-child {
+        background-color: #f0f0f0;
+        color: #333;
+    }
+
+    .cancel-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        color: #666;
+    }
+
+    .driver-message {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
     }
     </style>
 </head>
@@ -649,6 +718,12 @@
             <div class="accepted-rides-container">
                 <div class="accepted-rides-header">
                     <h2>Accepted Rides Dashboard</h2>
+                </div>
+                <div id="acceptedRidesContainer"></div>
+            </div>
+            <div class="accepted-rides-container">
+                <div class="accepted-rides-header">
+                    <h2>Declined Rides Dashboard</h2>
                 </div>
                 <div id="acceptedRidesContainer"></div>
             </div>
@@ -802,6 +877,9 @@
                             <p><i class="fas fa-map-marker-alt"></i> From: ${ride.pickupLocation}</p>
                             <p><i class="fas fa-location-arrow"></i> To: ${ride.destination}</p>
                         </div>
+                        <div class="driver-message">
+                            <p><strong>Your message:</strong> ${ride.driverMessage}</p>
+                        </div>
                     </div>
                     <div class="request-actions">
                         ${getRideActionButton(ride)}
@@ -809,7 +887,26 @@
                 </div>
             `;
         }
-
+        function showMessageModal(userId, isAccept = true) {
+            const messageModal = document.createElement('div');
+            messageModal.className = 'modal';
+            messageModal.innerHTML = `
+                <div class="modal-content">
+                    <h3>${isAccept ? 'Accept' : 'Decline'} Ride Request</h3>
+                    <textarea id="driver-message" placeholder="Optional: Add a message for the passenger..." rows="4"></textarea>
+                    <div class="button-group">
+                        <button onclick="processRequest('${userId}', '${isAccept ? 'accepted' : 'rejected'}', true)">
+                            ${isAccept ? 'Accept' : 'Decline'} without message
+                        </button>
+                        <button onclick="processRequest('${userId}', '${isAccept ? 'accepted' : 'rejected'}', false)">
+                            Send message & ${isAccept ? 'Accept' : 'Decline'}
+                        </button>
+                    </div>
+                    <button class="cancel-btn" onclick="document.querySelector('.modal').remove()">Cancel</button>
+                </div>
+            `;
+            document.body.appendChild(messageModal);
+        }
         function getRideActionButton(ride) {
             switch(ride.status) {
                 case 'ACCEPTED':
@@ -835,85 +932,126 @@
             }
         }
         function acceptRequest(userId) {
-            const requestCard = document.getElementById(`request-${userId}`);
-            console.log("Accepted :", currentDriver.id);
-            if (!requestCard) return;
+    const requestCard = document.getElementById(`request-${userId}`);
+    console.log("Accepted :", currentDriver.id);
+    if (!requestCard) return;
 
-            // Enhanced status management
-            fetch('http://localhost:5000/api/updateBookingStatus', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    userId,
-                    driverId: currentDriver.id,
-                    status: 'accepted'
-                })
-            }).then(response => {
-                if (response.ok) {
-                    // Update local state
-                    bookingStatuses.set(userId, 'accepted');
-                    acceptedRequests.add(userId);
-                    console.log("Current Request : ", currentRequests);
+    const messageModal = document.createElement('div');
+    messageModal.className = 'modal';
+    messageModal.innerHTML = `
+        <div class="modal-content">
+            <h3>Accept Ride Request</h3>
+            <textarea id="driver-message" placeholder="Optional: Add a message for the passenger..." rows="4"></textarea>
+            <div class="button-group">
+                <button onclick="submitRequest('${userId}', 'accepted', true)">
+                    Accept without message
+                </button>
+                <button onclick="submitRequest('${userId}', 'accepted', false)">
+                    Send message & Accept
+                </button>
+            </div>
+            <button class="cancel-btn" onclick="document.querySelector('.modal').remove()">Cancel</button>
+        </div>
+    `;
+    document.body.appendChild(messageModal);
+}
 
-                    // Find the request in the current requests list
-                    const request = currentRequests.find(req => req.userId.toString() === userId.toString());
-                    console.log("Request: ", request);
+function declineRequest(userId) {
+    const messageModal = document.createElement('div');
+    messageModal.className = 'modal';
+    messageModal.innerHTML = `
+        <div class="modal-content">
+            <h3>Decline Ride Request</h3>
+            <textarea id="driver-message" placeholder="Optional: Add a message for the passenger..." rows="4"></textarea>
+            <div class="button-group">
+                <button onclick="submitRequest('${userId}', 'rejected', true)">
+                    Decline without message
+                </button>
+                <button onclick="submitRequest('${userId}', 'rejected', false)">
+                    Send message & Decline
+                </button>
+            </div>
+            <button class="cancel-btn" onclick="document.querySelector('.modal').remove()">Cancel</button>
+        </div>
+    `;
+    document.body.appendChild(messageModal);
+}
 
-                    if (request) {
-                        // Check if the request is already in acceptedRides to prevent duplicates
-                        const isDuplicate = acceptedRides.some(ride => ride.userId.toString() === userId.toString());
-                        if (!isDuplicate) {
-                            // Add the accepted request to acceptedRides
-                            acceptedRides.push(request);
-                            
-                            // Create the accepted ride card and append it to the container
-                            const container = document.getElementById('acceptedRidesContainer');
-                            const acceptedRideCard = createAcceptedRideCard({
-                                ...request,
-                                status: 'accepted'
-                            });
-                            console.log(acceptedRideCard);
-                            console.log("HI");
-                            container.innerHTML += acceptedRideCard;
-                        } else {
-                            console.log("Ride already accepted");
-                        }
+function submitRequest(userId, status, skipMessage) {
+    const requestCard = document.getElementById(`request-${userId}`);
+    if (!requestCard) return;
+
+    const message = skipMessage ? '' : document.getElementById('driver-message')?.value?.trim() || '';
+    
+    // Remove modal
+    const modal = document.querySelector('.modal');
+    if (modal) modal.remove();
+
+    // Make API request
+    fetch('http://localhost:5000/api/updateBookingStatus', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            userId,
+            driverId: currentDriver.id,
+            status,
+            message
+        })
+    }).then(response => {
+        if (response.ok) {
+            if (status === 'accepted') {
+                // Update local state
+                bookingStatuses.set(userId, 'accepted');
+                acceptedRequests.add(userId);
+                console.log("Current Request : ", currentRequests);
+
+                // Find the request in the current requests list
+                const request = currentRequests.find(req => req.userId.toString() === userId.toString());
+                console.log("Request: ", request);
+
+                if (request) {
+                    // Check if the request is already in acceptedRides to prevent duplicates
+                    const isDuplicate = acceptedRides.some(ride => ride.userId.toString() === userId.toString());
+                    if (!isDuplicate) {
+                        // Add the accepted request to acceptedRides
+                        acceptedRides.push({
+                            ...request,
+                            driverMessage: message
+                        });
+                        
+                        // Create the accepted ride card and append it to the container
+                        const container = document.getElementById('acceptedRidesContainer');
+                        const acceptedRideCard = createAcceptedRideCard({
+                            ...request,
+                            status: 'accepted',
+                            driverMessage: message
+                        });
+                        console.log(acceptedRideCard);
+                        console.log("HI");
+                        container.innerHTML += acceptedRideCard;
+                    } else {
+                        console.log("Ride already accepted");
                     }
-
-                    // Optionally, remove the original request card from the requests container
-                    requestCard.remove();
-
-                    // Refresh the list of requests (if needed)
-                    refreshRequests();
                 }
-            }).catch(error => {
-                console.error('Error accepting request:', error);
-            });
+            } else {
+                // Remove from current requests for declined rides
+                currentRequests = currentRequests.filter(req => req.userId !== userId);
+            }
+
+            // Remove the original request card
+            requestCard.remove();
+
+            // Refresh UI as needed
+            if (status === 'accepted') {
+                refreshRequests();
+            } else {
+                checkEmptyRequests();
+            }
         }
-        function declineRequest(userId) {
-            fetch('http://localhost:5000/api/updateBookingStatus', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    userId,
-                    driverId: currentDriver.id,
-                    status: 'rejected'
-                })
-            }).then(response => {
-                if (response.ok) {
-                    // Remove from current requests
-                    currentRequests = currentRequests.filter(req => req.userId !== userId);
-                    
-                    // Update UI
-                    const requestCard = document.getElementById(`request-${userId}`);
-                    if (requestCard) {
-                        requestCard.remove();
-                    }
-                    
-                    checkEmptyRequests();
-                }
-            });
-        }
+    }).catch(error => {
+        console.error('Error processing request:', error);
+    });
+}
         function startRide(userId) {
             fetch('http://localhost:5000/api/startRide', {
                 method: 'POST',
