@@ -758,6 +758,7 @@
         let driverId = null;
         let currentDriver = null;
         let acceptedRides = [];
+        let handledRequests = new Set();
         let declinedRides = [];
 
 
@@ -1034,56 +1035,48 @@ function submitRequest(userId, status, skipMessage) {
         })
     }).then(response => {
         if (response.ok) {
+            // Add the request to handled requests set
+            handledRequests.add(userId.toString());
+            
             if (status === 'accepted') {
-                // Existing accepted ride logic
-                bookingStatuses.set(userId, 'accepted');
-                acceptedRequests.add(userId);
-
+                // Handle accepted ride
                 const request = currentRequests.find(req => req.userId.toString() === userId.toString());
                 
                 if (request) {
-                    const isDuplicate = acceptedRides.some(ride => ride.userId.toString() === userId.toString());
-                    if (!isDuplicate) {
-                        acceptedRides.push({
-                            ...request,
-                            driverMessage: message
-                        });
-                        
-                        const container = document.getElementById('acceptedRidesContainer');
-                        const acceptedRideCard = createAcceptedRideCard({
-                            ...request,
-                            status: 'accepted',
-                            driverMessage: message
-                        });
-                        container.innerHTML += acceptedRideCard;
-                    }
+                    acceptedRides.push({
+                        ...request,
+                        driverMessage: message
+                    });
+                    
+                    const container = document.getElementById('acceptedRidesContainer');
+                    const acceptedRideCard = createAcceptedRideCard({
+                        ...request,
+                        status: 'accepted',
+                        driverMessage: message
+                    });
+                    container.innerHTML += acceptedRideCard;
                 }
             } else {
-                // Handle declined rides
+                // Handle declined ride
                 const request = currentRequests.find(req => req.userId.toString() === userId.toString());
                 if (request) {
-                    const isDuplicate = declinedRides.some(ride => ride.userId.toString() === userId.toString());
-                    if (!isDuplicate) {
-                        declinedRides.push({
-                            ...request,
-                            driverMessage: message,
-                            status: 'declined'
-                        });
-                        updateDeclinedRidesDashboard();
-                    }
+                    declinedRides.push({
+                        ...request,
+                        driverMessage: message,
+                        status: 'declined'
+                    });
+                    updateDeclinedRidesDashboard();
                 }
-                currentRequests = currentRequests.filter(req => req.userId !== userId);
             }
 
-            // Remove the original request card
+            // Remove the request from currentRequests array
+            currentRequests = currentRequests.filter(req => req.userId.toString() !== userId.toString());
+            
+            // Remove the request card from the UI
             requestCard.remove();
-
-            // Refresh UI as needed
-            if (status === 'accepted') {
-                refreshRequests();
-            } else {
-                checkEmptyRequests();
-            }
+            
+            // Check if there are any remaining requests
+            checkEmptyRequests();
         }
     }).catch(error => {
         console.error('Error processing request:', error);
@@ -1197,55 +1190,55 @@ function submitRequest(userId, status, skipMessage) {
         }
 
         function fetchRequests() {
-            if (isLoading) return;
-            
-            isLoading = true;
-            const refreshButton = document.querySelector('.refresh-button i');
-            refreshButton.classList.add('loading');
+    if (isLoading) return;
+    
+    isLoading = true;
+    const refreshButton = document.querySelector('.refresh-button i');
+    refreshButton.classList.add('loading');
 
-            const container = document.getElementById('requestsContainer');
+    const container = document.getElementById('requestsContainer');
+    
+    fetch(`/api/getDriverRequests/${driverId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Filter out any requests that have been handled
+            currentRequests = data.filter(request => !handledRequests.has(request.userId.toString()));
             
-            // Fetch from your actual API endpoint
-            fetch(`/api/getDriverRequests/${driverId}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    currentRequests = data; // Store the current requests
-                    
-                    if (data.length === 0) {
-                        container.innerHTML = `
-                            <div class="no-requests">
-                                <i class="fas fa-inbox fa-3x"></i>
-                                <p>No booking requests available at the moment</p>
-                            </div>
-                        `;
-                        return;
-                    }
+            if (currentRequests.length === 0) {
+                container.innerHTML = `
+                    <div class="no-requests">
+                        <i class="fas fa-inbox fa-3x"></i>
+                        <p>No booking requests available at the moment</p>
+                    </div>
+                `;
+                return;
+            }
 
-                    container.innerHTML = '';
-                    data.forEach(request => {
-                        const isAccepted = acceptedRequests.has(request.userId);
-                        container.innerHTML += createRequestCard(request, isAccepted);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching requests:', error);
-                    container.innerHTML = `
-                        <div class="no-requests">
-                            <i class="fas fa-exclamation-circle fa-3x"></i>
-                            <p>Failed to load booking requests. Please try again later.</p>
-                        </div>
-                    `;
-                })
-                .finally(() => {
-                    isLoading = false;
-                    refreshButton.classList.remove('loading');
-                });
-        }
+            container.innerHTML = '';
+            currentRequests.forEach(request => {
+                container.innerHTML += createRequestCard(request);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching requests:', error);
+            container.innerHTML = `
+                <div class="no-requests">
+                    <i class="fas fa-exclamation-circle fa-3x"></i>
+                    <p>Failed to load booking requests. Please try again later.</p>
+                </div>
+            `;
+        })
+        .finally(() => {
+            isLoading = false;
+            refreshButton.classList.remove('loading');
+        });
+}
+
 
         function checkEmptyRequests() {
             const container = document.getElementById('requestsContainer');
