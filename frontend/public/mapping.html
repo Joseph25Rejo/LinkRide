@@ -4,31 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Mapbox GL JS -->
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
-    
-    <!-- Mapbox GL Directions -->
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.css">
-    
-    <!-- Add Turf.js for route optimization -->
     <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <title>Bangalore Metro Map Navigation</title>
+    <title>Bangalore Metro Navigator</title>
     <style>
         :root {
             --primary-color: #2563eb;
             --secondary-color: #1d4ed8;
             --purple-line: #800080;
             --green-line: #008000;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: var(--background);
         }
 
         .container {
@@ -39,178 +44,245 @@
         #map {
             flex: 1;
             height: 100%;
+            transition: all 0.3s ease;
         }
 
         #sidebar {
             width: 400px;
             height: 100vh;
-            background: #ffffff;
+            background: var(--card-bg);
             padding: 20px;
-            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow);
             overflow-y: auto;
+            transition: all 0.3s ease;
         }
 
         .control-panel {
-            background: #ffffff;
+            background: var(--background);
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .control-panel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px -1px rgb(0 0 0 / 0.15);
         }
 
         .panel-title {
             font-size: 1.25rem;
             font-weight: 600;
             margin-bottom: 15px;
-            color: #1e293b;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        select {
+        .panel-title i {
+            color: var(--primary-color);
+        }
+
+        select, input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #e2e8f0;
-            border-radius: 6px;
+            border-radius: 8px;
             margin-bottom: 10px;
             font-size: 14px;
+            transition: all 0.2s ease;
         }
 
-        .station-popup {
-            padding: 10px;
-            max-width: 200px;
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
-        .station-popup h3 {
-            margin: 0 0 5px 0;
-            color: #333;
-        }
-
-        .station-popup button {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 8px;
-        }
-
-        .metro-station-marker {
-            cursor: pointer;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 0 5px rgba(0,0,0,0.3);
-        }
-
-        .live-location {
+        .metro-line {
             display: flex;
             align-items: center;
             padding: 10px;
-            background: #f8fafc;
-            border-radius: 6px;
-            margin-bottom: 10px;
+            background: var(--card-bg);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        .location-dot {
+        .line-indicator {
             width: 12px;
             height: 12px;
-            background: #ff0000;
             border-radius: 50%;
-            margin-right: 8px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.7; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .waypoint-list {
-            margin-top: 10px;
-        }
-
-        .waypoint-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px;
-            background: #f8fafc;
-            border-radius: 4px;
-            margin-bottom: 5px;
+            margin-right: 12px;
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.8);
         }
 
         .button {
             background: var(--primary-color);
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
+            padding: 10px 16px;
+            border-radius: 8px;
             cursor: pointer;
             margin: 5px;
             font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
         }
 
         .button:hover {
             background: var(--secondary-color);
+            transform: translateY(-1px);
         }
 
-        .search-suggestions {
-            position: absolute;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            max-height: 200px;
-            overflow-y: auto;
-            width: 100%;
-            z-index: 1000;
-            display: none;
+        .button i {
+            font-size: 16px;
         }
 
-        .suggestion-item {
-            padding: 8px;
-            cursor: pointer;
-        }
-
-        .suggestion-item:hover {
-            background: #f0f0f0;
-        }
-        .metro-line {
+        .live-location {
             display: flex;
             align-items: center;
-            margin-bottom: 10px; /* Add spacing between lines */
+            padding: 12px;
+            background: var(--card-bg);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        .line-indicator {
-            width: 12px; /* Diameter of the dot */
-            height: 12px; /* Diameter of the dot */
-            border-radius: 50%; /* Make it a circle */
-            margin-right: 8px; /* Add space between the dot and text */
+        .location-dot {
+            width: 12px;
+            height: 12px;
+            background: #ef4444;
+            border-radius: 50%;
+            margin-right: 12px;
+            animation: pulse 2s infinite;
         }
 
-        .purple-line {
-            background-color: purple; /* Color for the purple line */
+        .waypoint-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .green-line {
-            background-color: green; /* Color for the green line */
+        .waypoint-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
         }
 
-            </style>
+        .waypoint-item:hover {
+            transform: translateX(4px);
+        }
+
+        .station-popup {
+            padding: 12px;
+            max-width: 240px;
+        }
+
+        .station-popup h3 {
+            margin: 0 0 8px 0;
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+
+        .toggle-sidebar {
+            position: absolute;
+            top: 20px;
+            left: 420px;
+            z-index: 1000;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+        }
+
+        .dark-mode {
+            --background: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #a3a3a3;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            #sidebar {
+                position: fixed;
+                right: 0;
+                width: 100%;
+                max-width: 400px;
+                transform: translateX(100%);
+            }
+
+            #sidebar.active {
+                transform: translateX(0);
+            }
+
+            .toggle-sidebar {
+                left: unset;
+                right: 420px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
+        <button class="toggle-sidebar" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+        </button>
         <div id="map"></div>
         <div id="sidebar">
             <div class="control-panel">
-                <h3 class="panel-title">Metro Stations</h3>
+                <h3 class="panel-title">
+                    <i class="fas fa-subway"></i>
+                    Metro Lines
+                </h3>
                 <div class="metro-line">
-                    <div class="line-indicator purple-line"></div>
+                    <div class="line-indicator" style="background-color: var(--purple-line)"></div>
                     <span>Purple Line</span>
                 </div>
                 <div class="metro-line">
-                    <div class="line-indicator green-line"></div>
+                    <div class="line-indicator" style="background-color: var(--green-line)"></div>
                     <span>Green Line</span>
                 </div>
                 <select id="metro-stations" onchange="onMetroStationSelect(event)">
@@ -219,33 +291,63 @@
             </div>
 
             <div class="control-panel">
-                <h3 class="panel-title">Live Location</h3>
+                <h3 class="panel-title">
+                    <i class="fas fa-location-dot"></i>
+                    Live Location
+                </h3>
                 <div class="live-location">
                     <div class="location-dot"></div>
                     <span>Your current location</span>
                 </div>
-                <button class="button" onclick="centerOnLiveLocation()">Center on my location</button>
+                <button class="button" onclick="centerOnLiveLocation()">
+                    <i class="fas fa-crosshairs"></i>
+                    Center on my location
+                </button>
             </div>
 
             <div class="control-panel">
-                <h3 class="panel-title">Route Controls</h3>
-                <button class="button" onclick="clearRoute()">Clear Route</button>
-                <button class="button" onclick="optimizeRoute()">Optimize Route</button>
-                <button class="button" onclick="exportRoute()">Export Route</button>
-                <button class="button" onclick="toggleTraffic()">Toggle Traffic</button>
-                <button class="button" onclick="toggle3D()">Toggle 3D</button>
+                <h3 class="panel-title">
+                    <i class="fas fa-route"></i>
+                    Route Controls
+                </h3>
+                <button class="button" onclick="clearRoute()">
+                    <i class="fas fa-trash"></i>
+                    Clear Route
+                </button>
+                <button class="button" onclick="optimizeRoute()">
+                    <i class="fas fa-magic"></i>
+                    Optimize Route
+                </button>
+                <button class="button" onclick="exportRoute()">
+                    <i class="fas fa-download"></i>
+                    Export Route
+                </button>
+                <button class="button" onclick="toggleTraffic()">
+                    <i class="fas fa-car"></i>
+                    Toggle Traffic
+                </button>
+                <button class="button" onclick="toggle3D()">
+                    <i class="fas fa-cube"></i>
+                    Toggle 3D
+                </button>
             </div>
 
             <div class="control-panel">
-                <h3 class="panel-title">Search Location</h3>
+                <h3 class="panel-title">
+                    <i class="fas fa-search"></i>
+                    Search Location
+                </h3>
                 <input type="text" id="waypoint-input" placeholder="Enter location" 
-                       oninput="searchWithSuggestions(this.value)" class="search-input">
-                <div id="search-suggestions" class="search-suggestions"></div>
+                       oninput="searchWithSuggestions(this.value)">
+                <div id="search-suggestions"></div>
             </div>
 
             <div class="control-panel">
-                <h3 class="panel-title">Waypoints</h3>
-                <div id="waypoint-list" class="waypoint-list"></div>
+                <h3 class="panel-title">
+                    <i class="fas fa-list"></i>
+                    Waypoints
+                </h3>
+                <div id="waypoint-list"></div>
             </div>
         </div>
     </div>
