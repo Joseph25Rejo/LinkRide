@@ -655,6 +655,16 @@
         background-color: #f8f9fa;
         border-radius: 4px;
     }
+    .status-declined {
+        background: var(--danger);
+        color: white;
+    }
+
+    .declined-ride-card {
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--gray-200);
+        background-color: #fff5f5;
+    }
     </style>
 </head>
 <body>
@@ -725,7 +735,7 @@
                 <div class="accepted-rides-header">
                     <h2>Declined Rides Dashboard</h2>
                 </div>
-                <div id="acceptedRidesContainer"></div>
+                <div id="declinedRidesContainer"></div>
             </div>
             <div class="requests-container">
                 <div class="requests-header">
@@ -748,6 +758,8 @@
         let driverId = null;
         let currentDriver = null;
         let acceptedRides = [];
+        let declinedRides = [];
+
 
         // Function to load driver details dynamically
         async function loadDriverDetails() {
@@ -887,6 +899,29 @@
                 </div>
             `;
         }
+        function createDeclinedRideCard(ride) {
+            return `
+                <div class="declined-ride-card" id="declined-${ride.userId}">
+                    <div class="request-info">
+                        <h3>
+                            Ride #${ride.userId}
+                            <span class="ride-status status-declined">Declined</span>
+                        </h3>
+                        <div class="request-details">
+                            <p><i class="fas fa-user"></i> ${ride.userName}</p>
+                            <p><i class="fas fa-phone"></i> ${ride.userContact}</p>
+                            <p><i class="fas fa-map-marker-alt"></i> From: ${ride.pickupLocation}</p>
+                            <p><i class="fas fa-location-arrow"></i> To: ${ride.destination}</p>
+                            ${ride.driverMessage ? `
+                                <div class="driver-message">
+                                    <p><strong>Your message:</strong> ${ride.driverMessage}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
         function showMessageModal(userId, isAccept = true) {
             const messageModal = document.createElement('div');
             messageModal.className = 'modal';
@@ -1000,41 +1035,43 @@ function submitRequest(userId, status, skipMessage) {
     }).then(response => {
         if (response.ok) {
             if (status === 'accepted') {
-                // Update local state
+                // Existing accepted ride logic
                 bookingStatuses.set(userId, 'accepted');
                 acceptedRequests.add(userId);
-                console.log("Current Request : ", currentRequests);
 
-                // Find the request in the current requests list
                 const request = currentRequests.find(req => req.userId.toString() === userId.toString());
-                console.log("Request: ", request);
-
+                
                 if (request) {
-                    // Check if the request is already in acceptedRides to prevent duplicates
                     const isDuplicate = acceptedRides.some(ride => ride.userId.toString() === userId.toString());
                     if (!isDuplicate) {
-                        // Add the accepted request to acceptedRides
                         acceptedRides.push({
                             ...request,
                             driverMessage: message
                         });
                         
-                        // Create the accepted ride card and append it to the container
                         const container = document.getElementById('acceptedRidesContainer');
                         const acceptedRideCard = createAcceptedRideCard({
                             ...request,
                             status: 'accepted',
                             driverMessage: message
                         });
-                        console.log(acceptedRideCard);
-                        console.log("HI");
                         container.innerHTML += acceptedRideCard;
-                    } else {
-                        console.log("Ride already accepted");
                     }
                 }
             } else {
-                // Remove from current requests for declined rides
+                // Handle declined rides
+                const request = currentRequests.find(req => req.userId.toString() === userId.toString());
+                if (request) {
+                    const isDuplicate = declinedRides.some(ride => ride.userId.toString() === userId.toString());
+                    if (!isDuplicate) {
+                        declinedRides.push({
+                            ...request,
+                            driverMessage: message,
+                            status: 'declined'
+                        });
+                        updateDeclinedRidesDashboard();
+                    }
+                }
                 currentRequests = currentRequests.filter(req => req.userId !== userId);
             }
 
@@ -1141,6 +1178,22 @@ function submitRequest(userId, status, skipMessage) {
                     </div>
                 </div>
             `).join('');
+        }
+
+        function updateDeclinedRidesDashboard() {
+            const container = document.getElementById('declinedRidesContainer');
+            
+            if (declinedRides.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-dashboard">
+                        <i class="fas fa-ban fa-3x"></i>
+                        <p>No declined rides to show</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = declinedRides.map(ride => createDeclinedRideCard(ride)).join('');
         }
 
         function fetchRequests() {
