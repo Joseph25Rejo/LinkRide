@@ -1500,7 +1500,22 @@ const driversDatabase = [
         "price": 6,
         "isOnline": true,
         "contactNumber": "9876543229"
-    }   
+    },
+    {
+        "id": 101,
+        "name": "Lois Elizabeth Shaji",
+        "rating": 4.6,
+        "car": "Cupid",
+        "routes": {
+            "start": "My love",
+            "end": "Ends with You"
+        },
+        "departureTime": "6:30 PM",
+        "seatsAvailable": 4,
+        "price": 6,
+        "isOnline": true,
+        "contactNumber": "I love you driver of my heart"
+    } 
 ];
 
 export default driversDatabase;
