@@ -837,7 +837,7 @@ V46.538
             console.log("Book Ride");
 
             try {
-                const response = await fetch('http://localhost:5000/api/bookRide', {
+                const response = await fetch('/api/bookRide', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

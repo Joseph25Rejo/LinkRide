@@ -1024,7 +1024,7 @@ function submitRequest(userId, status, skipMessage) {
     if (modal) modal.remove();
 
     // Make API request
-    fetch('http://localhost:5000/api/updateBookingStatus', {
+    fetch('/api/updateBookingStatus', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1083,7 +1083,7 @@ function submitRequest(userId, status, skipMessage) {
     });
 }
         function startRide(userId) {
-            fetch('http://localhost:5000/api/startRide', {
+            fetch('/api/startRide', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1103,7 +1103,7 @@ function submitRequest(userId, status, skipMessage) {
         }
 
         function completeRide(userId) {
-            fetch('http://localhost:5000/api/completeRide', {
+            fetch('/api/completeRide', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1124,7 +1124,7 @@ function submitRequest(userId, status, skipMessage) {
             const isOnline = e.target.checked;
             document.getElementById('currentStatus').textContent = isOnline ? 'Online' : 'Offline';
             
-            fetch(`http://localhost:5000/api/updateDriverStatus`, {
+            fetch(`api/updateDriverStatus`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
