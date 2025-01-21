@@ -13,7 +13,7 @@ A simple carpooling application designed for students to find and offer rides to
 
 - **Frontend**: HTML, CSS, JavaScript
 - **Backend**: Node.js, Express
-- **Database**: SQLite3
+- **Database**: MongoDB
 ## Installation
 
 ### Prerequisites
@@ -38,13 +38,26 @@ A simple carpooling application designed for students to find and offer rides to
 5. **Go to a search engine(Google) and type out http://localhost:{PORT}**
 
 ### Usage
-**Creating a Trip**: 
-  Fill in the trip details in the form and click "Create Trip" to add a new trip.
 **Finding Carpools**: 
-  Click on the "Carpool" link in the navigation bar to view available trips.
-**Driver Registration**: 
-  Navigate to the "Become a Carpool Driver" page to register as a driver.
+  Click on the "Carpool" page in the navigation bar to view available trips.
+**Driver Dashboard**: 
+  Navigate to the "Driver" page to register as a driver.
+**Emergency Dashboard**
+   Navigate to emergency page to send a request to all drivers present. 
+**Entertainment**
+   Pave your way to entertainment page to have a joyous ride, listen to some music and have a road trip worth of entertainment. 
+
 ### API Endpoints
-**POST /api/trips**: Create a new trip.
-**GET /api/trips**: Retrieve a list of available trips.
-**PUT /api/trips/**:id: Update the available seats for a specific trip.
+#### **GET /api/drivers**
+Retrieve a list of all registered drivers.  
+**Response**:  
+```json
+[
+    {
+        "id": 1,
+        "name": "Driver Name",
+        "contactNumber": "1234567890",
+        "availability": true
+    },
+    ...
+]
