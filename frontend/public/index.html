@@ -45,7 +45,11 @@
             <div class="hero-content">
                 <div class="title-and-button"></div><h1 class="animate-title">Carpooling for Students</h1>
                     <p class="animate-subtitle">A smarter way to get to college—Save money and reduce your carbon footprint.</p>
-                    <a href="/carpooling" class="btn-primary rainbow-border">Find Carpool</a>
+                    <button class="btn-17" onclick="window.location.href='/carpooling'">
+                        <span class="text-container">
+                          <span class="text">Join Carpool</span>
+                        </span>
+                    </button>
                 </div>
             </div>
         </section>
@@ -67,28 +71,44 @@
                         <p>Departure: 7:30 AM from Koramangala</p>
                         <p>Arrival: 9:00 AM at RVCE</p>
                         <p>Seats Available: 3</p>
-                        <button class="btn-primary">Join Carpool</button>
+                        <button class="btn-17">
+                            <span class="text-container">
+                              <span class="text">Join Carpool</span>
+                            </span>
+                        </button>
                     </div>
                     <div class="route-card">
                         <h3>Route 2: HSR to RVCE</h3>
                         <p>Departure: 7:45 AM </p>
                         <p>Arrival: 9:00 AM at RVCE</p>
                         <p>Seats Available: 3</p>
-                        <button class="btn-primary">Join Carpool</button>
+                        <button class="btn-17">
+                            <span class="text-container">
+                              <span class="text">Join Carpool</span>
+                            </span>
+                        </button>
                     </div>
                     <div class="route-card">
                         <h3>Route 3: Jayanagar to RVCE</h3>
                         <p>Departure: 7:45 AM </p>
                         <p>Arrival: 9:00 AM at RVCE</p>
                         <p>Seats Available: 3</p>
-                        <button class="btn-primary">Join Carpool</button>
+                        <button class="btn-17">
+                            <span class="text-container">
+                              <span class="text">Join Carpool</span>
+                            </span>
+                        </button>
                     </div>
                     <div class="route-card">
                         <h3>Route 4: Hebbal to RVCE</h3>
                         <p>Departure: 7:15 AM </p>
                         <p>Arrival: 9:00 AM at RVCE</p>
                         <p>Seats Available: 3</p>
-                        <button class="btn-primary">Join Carpool</button>
+                        <button class="btn-17">
+                            <span class="text-container">
+                              <span class="text">Join Carpool</span>
+                            </span>
+                        </button>
                     </div>
                 </div>
                 <button class="carousel-btn right-btn" onclick="moveSlide(1)">&#10095;</button>
@@ -205,7 +225,7 @@
             }
 
             // Join Carpool Button Handler
-            document.querySelectorAll('.btn-primary').forEach(button => {
+            document.querySelectorAll('btn-17').forEach(button => {
                 if (button.textContent === 'Join Carpool') {
                     button.addEventListener('click', handleJoinCarpool);
                 }
