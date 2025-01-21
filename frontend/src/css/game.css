@@ -997,4 +997,27 @@ h3:hover {
 .social-links a.fa-instagram:hover {
     background-color: #C13584;
 }
+.new-button-class {
+    /* Remove display: block */ 
+    margin: 20px auto; /* Keeps the button centered */
+    padding: 20px 40px;  
+    color: #333;
+    text-decoration: none;
+    border-radius: 20px; /* Creates a more rounded button */
+    transition: background-color 0.3s ease; 
+    text-align: center; 
+    font-size: 1.2em; 
+    border: none; /* Removes any button border */
+    display: inline-block; /* Makes the button appear inline */ 
+    background-color: rgba(255, 255, 255, 0); /* Initially transparent white */
+    border: 3px solid #ccc; /* Light grey border */
+    transition: all 0.3s ease;
+  }
+  
+  .new-button-class:hover {
+    background-color: rgba(128, 128, 128, 0.5); /* Slightly darker glassy color on hover */
+  }
+  .title-and-button {
+    text-align: center; /* Centers the content horizontally within the container */
+  }
   
