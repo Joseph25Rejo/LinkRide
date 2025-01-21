@@ -94,6 +94,7 @@ app.get('/api/bookingStatus/:userId/:driverId', (req, res) => {
     const { userId, driverId } = req.params;
     const booking = bookingStatuses.get(userId.toString());
     console.log("Booking status request:", booking);
+    console.log("Booking!!")
 
     if (!booking) {
         return res.status(404).json({ message: 'Booking not found.' });
