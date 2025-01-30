@@ -57,7 +57,7 @@ app.get('/api/drivers', (req, res) => {
 
 app.post('/api/bookRide', (req, res) => {
     console.log('Request received at /api/bookRide:', req.body);
-    const { userId, driverId, userName, userContact, pickupLocation, destination } = req.body;
+    const { userId, driverId, userName, userContact, pickupLocation, destination, isEmergency } = req.body;
 
     if (!userId || !driverId || !userName || !userContact || !pickupLocation || !destination) {
         console.log("Validation failed");
@@ -81,10 +81,24 @@ app.post('/api/bookRide', (req, res) => {
     }
 
     // Save the booking request with the correct driverName
-    bookingRequests.push({ userId, driverId, userName, userContact, pickupLocation, destination });
-    console.log("Driver Name : ", driverName, "Driver Contact : ", driverContact);
-    bookingStatuses.set(userId.toString(), { status: 'pending', driverName: driverName , driverContact: driverContact }); // Set driverName properly here
+    bookingRequests.push({ 
+        userId, 
+        driverId, 
+        userName, 
+        userContact, 
+        pickupLocation, 
+        destination,
+        isEmergency: isEmergency || false
+     });
+        
+    bookingStatuses.set(userId.toString(), { 
+        status: 'pending', 
+        driverName: driverName , 
+        driverContact: driverContact,
+        isEmergency: isEmergency || false
+     }); // Set driverName properly here
     console.log('Booking request received:', req.body);
+    console.log("IS EMERGENCY : ", isEmergency);
     res.status(201).json({ message: 'Booking request submitted successfully!' });
 });
 
@@ -92,6 +106,7 @@ app.post('/api/bookRide', (req, res) => {
 // Server route to handle booking status checks
 app.get('/api/bookingStatus/:userId/:driverId', (req, res) => {
     const { userId, driverId } = req.params;
+    console.log(userId)
     const booking = bookingStatuses.get(userId.toString());
     console.log("Booking status request:", booking);
     console.log("Booking!!")
@@ -105,20 +120,25 @@ app.get('/api/bookingStatus/:userId/:driverId', (req, res) => {
         driverName: booking.driverName || 'Default Driver',
         driverContact: booking.driverContact || 'Unknown',
         message: booking.message || '', // Include the message in response
-        timestamp: booking.timestamp || Date.now() // Optional: Add timestamp for tracking
+        timestamp: booking.timestamp || Date.now(),
+        isEmergency:  bookingStatuses.get(request.userId.toString())?.isEmergency || false
     });
+    console.log("Driver : ", booking.driverName, "isEmergency : ", booking.isEmergency);
 });
 
 
-app.get('/api/getDriverDetails/:driverId', (req, res) => {
+app.get('/api/getDriverRequests/:driverId', (req, res) => {
     const driverId = parseInt(req.params.driverId);
-    const driver = driversDatabase.find(driver => driver.id === driverId);
+    const driverRequests = bookingRequests
+        .filter(request => request.driverId === driverId)
+        .map(request => ({
+            ...request,
+            status: bookingStatuses.get(request.userId.toString())?.status || 'pending',
+            isEmergency: bookingStatuses.get(request.userId.toString())?.isEmergency || false 
+            // Include isEmergency from bookingStatuses 
+        }));
 
-    if (!driver) {
-        return res.status(404).json({ message: 'Driver not found' });
-    }
-
-    res.status(200).json(driver);
+    res.status(200).json(driverRequests);
 });
 
 // New endpoint to update booking status

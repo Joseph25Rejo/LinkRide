@@ -624,6 +624,14 @@
         margin-top: 15px;
     }
 
+    .emergency-request {
+        color: red;           /* Make the text red */
+        font-weight: bold;    /* Make the text bold */
+        font-size: larger;     /* Make the text larger */ 
+        background-color: yellow; /* Add a yellow background */ 
+        padding: 5px;         /* Add some padding */
+        border-radius: 5px;    /* Round the corners */
+    }
     .button-group button {
         padding: 8px 16px;
         border: none;
@@ -836,6 +844,7 @@
             });
         function createRequestCard(request, isAccepted = false) {
             const status = bookingStatuses.get(request.userId) || 'pending';
+            console.log("Emergency : ", request.isEmergency);
             return `
                 <div class="request-card" id="request-${request.userId}">
                     <div class="request-info">
@@ -847,6 +856,7 @@
                             <p><i class="fas fa-phone"></i> ${request.userContact}</p>
                             <p><i class="fas fa-map-marker-alt"></i> From: ${request.pickupLocation}</p>
                             <p><i class="fas fa-location-arrow"></i> To: ${request.destination}</p>
+                            ${request.isEmergency ? '<p class="emergency-request"><i class="fas fa-exclamation-triangle"></i> Emergency Request</p>' : ''}
                         </div>
                     </div>
                     <div class="request-actions">

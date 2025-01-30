@@ -901,6 +901,7 @@
         async function handleBookingSubmission(formData) {
             const userId = generateUserId();
             const progressDialog = createProgressDialog();
+            formData.isEmergency = true;
             
             try {
                 const bookingResults = await Promise.allSettled(
@@ -962,7 +963,8 @@
                         userName: formData.userName,
                         userContact: formData.userContact,
                         pickupLocation: formData.pickupLocation,
-                        destination: formData.destination
+                        destination: formData.destination,
+                        isEmergency: true
                     })
                 });
 
@@ -998,8 +1000,6 @@
 
             const data = await response.json();
             const previousStatus = driverStatuses.get(driver.id);
-            
-            // If this driver was already accepted, don't update their status
             if (firstAcceptedDriver && firstAcceptedDriver.id !== driver.id) {
                 return;
             }
